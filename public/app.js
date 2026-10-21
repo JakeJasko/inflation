@@ -263,7 +263,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.4';
+  const APP_VERSION = '2.7.5';
   const state = {
     source: 'live',
     receipts: [],
@@ -455,10 +455,20 @@
     const grossPriceIncreaseDollars = Math.max(weightedLatestCost - weightedBaseCost, 0);
     const annualDollarDrag = grossPriceIncreaseDollars / Math.max(avgBasketYears, 1);
 
+    // Effective discount rate on total spend
+    const effectiveDiscountRatePct =
+      totalGrossSpend > 0 ? (totalInstantSavings / totalGrossSpend) * 100 : 0;
+
+    // Inflation Offset Multiple: How many times promo savings covered price inflation
+    const inflationOffsetMultiple =
+      grossPriceIncreaseDollars > 0
+        ? totalInstantSavings / grossPriceIncreaseDollars
+        : totalInstantSavings > 0 ? Infinity : 0;
+
     // Savings Shield Ratio: What percentage of gross price inflation was absorbed by promo rebates?
     const savingsShieldRatio =
       grossPriceIncreaseDollars > 0
-        ? Math.min((totalInstantSavings / grossPriceIncreaseDollars) * 100, 100)
+        ? (totalInstantSavings / grossPriceIncreaseDollars) * 100
         : totalInstantSavings > 0 ? 100 : 0;
 
     // CPI Trajectory Time-Series
@@ -542,7 +552,10 @@
       officialCpiCumulativePct,
       annualSpreadVsBls: annualizedBasketInflationPct - US_CPI_ANNUAL_RATE * 100,
       annualDollarDrag,
+      grossPriceIncreaseDollars,
       totalInstantSavings,
+      effectiveDiscountRatePct,
+      inflationOffsetMultiple,
       savingsShieldRatio,
       cpiSeries,
       deptBreakdown
@@ -593,7 +606,7 @@
       }
       const shieldSub = document.getElementById('kpiShieldSubtext');
       if (shieldSub) {
-        shieldSub.textContent = 'Share of price increases offset by instant savings & discounts';
+        shieldSub.textContent = 'Percentage saved off total shelf spending through promotions';
       }
 
       if (emptyPane) {
@@ -670,11 +683,19 @@
     const basketTotalsEl = document.getElementById('kpiBasketTotals');
     basketTotalsEl.textContent = `${formatCurrency(analytics.singleUnitBaseCost)} → ${formatCurrency(analytics.singleUnitLatestCost)}/run`;
 
-    document.getElementById('kpiShieldRatio').textContent = `${analytics.savingsShieldRatio.toFixed(1)}%`;
+    document.getElementById('kpiShieldRatio').textContent = `${analytics.effectiveDiscountRatePct.toFixed(1)}%`;
     document.getElementById('kpiTotalSavingsCaptured').textContent = `${formatCurrency(analytics.totalInstantSavings)} Saved`;
     const shieldSub = document.getElementById('kpiShieldSubtext');
     if (shieldSub) {
-      shieldSub.textContent = `Discounts absorbed ${analytics.savingsShieldRatio.toFixed(1)}% of price increases`;
+      if (analytics.grossPriceIncreaseDollars > 0) {
+        const multipleStr =
+          analytics.inflationOffsetMultiple >= 10
+            ? `${analytics.inflationOffsetMultiple.toFixed(0)}x`
+            : `${analytics.inflationOffsetMultiple.toFixed(1)}x`;
+        shieldSub.textContent = `Saved ${analytics.effectiveDiscountRatePct.toFixed(1)}% off total spend • Offsets ${multipleStr} of price increases`;
+      } else {
+        shieldSub.textContent = `Saved ${analytics.effectiveDiscountRatePct.toFixed(1)}% off total spend via instant warehouse coupons`;
+      }
     }
 
     // Forward Scenario Planner
