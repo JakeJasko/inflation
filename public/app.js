@@ -51,7 +51,8 @@
     });
   }
 
-  // Application State
+  // Application Version & State
+  const APP_VERSION = '2.7.1';
   const state = {
     source: 'live',
     receipts: [],
@@ -1837,6 +1838,9 @@
     setupSyncAndImportControls();
     setupMainChartHover();
     setupInfoTooltips();
+
+    const verEl = document.getElementById('footerAppVersion');
+    if (verEl) verEl.textContent = `v${APP_VERSION}`;
 
     // 1. Load export script text
     const isLocalhost =

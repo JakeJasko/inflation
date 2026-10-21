@@ -79,6 +79,8 @@ html, body {
   font-size: 0.875rem; /* 14px floor for body */
   line-height: 1.5;
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -665,8 +667,10 @@ pre,
 
 .terminal-workspace {
   max-width: 1560px;
+  width: 100%;
   margin: 0 auto;
   padding: 1.25rem 1.5rem 3rem;
+  flex: 1 0 auto;
 }
 
 .terminal-view-pane {
@@ -1738,6 +1742,65 @@ dialog::backdrop {
   .empty-steps-grid {
     grid-template-columns: 1fr;
   }
+}
+
+/* ==========================================================================
+   TERMINAL FOOTER & VERSION
+   ========================================================================== */
+
+.terminal-footer {
+  border-top: 1px solid var(--border-subtle);
+  background: var(--bg-surface);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  padding: 0.85rem 1.5rem;
+  margin-top: auto;
+}
+
+.terminal-footer-inner {
+  max-width: 1560px;
+  margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.footer-meta {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--text-muted);
+}
+
+.footer-dot {
+  color: var(--border-subtle);
+}
+
+.footer-version-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-version-badge {
+  font-family: var(--font-mono);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 0.15rem 0.45rem;
+  letter-spacing: 0.03em;
+  transition: all 0.15s ease;
+  user-select: all;
+}
+
+.footer-version-badge:hover {
+  color: var(--text-primary);
+  border-color: var(--border-focus);
 }
 
 /* Accessibility: Keyboard focus outlines & reduced motion */
