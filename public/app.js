@@ -144,7 +144,7 @@
         entry.history.push({
           date: rDateStr,
           timestamp: rDate.getTime(),
-          warehouse: receipt.warehouseName || receipt.warehouseShortName || 'CARLSBAD #462',
+          warehouse: receipt.warehouseName || receipt.warehouseShortName || 'Warehouse',
           barcode: receipt.transactionBarcode || '',
           units,
           grossAmount,
@@ -283,7 +283,7 @@
 
       cpiSeries.push({
         date: rDateStr,
-        warehouse: r.warehouseName || 'CARLSBAD #462',
+        warehouse: r.warehouseName || 'Warehouse',
         receiptTotal: Number(r.total) || 0,
         listIndex: baseListBasket > 0 ? (currentListBasket / baseListBasket) * 100 : 100,
         netIndex: baseNetBasket > 0 ? (currentNetBasket / baseNetBasket) * 100 : 100,
@@ -357,6 +357,8 @@
       if (ledgerTabCount) ledgerTabCount.textContent = '(0 Receipts)';
       if (navDateHorizon) navDateHorizon.innerHTML = '<strong>Date Horizon:</strong> Awaiting data';
       if (navWarehouseName) navWarehouseName.innerHTML = '<strong>Warehouse:</strong> Connect account';
+      const headerWhBadge = document.getElementById('headerWarehouseBadge');
+      if (headerWhBadge) headerWhBadge.textContent = 'COSTCO WHOLESALE';
 
       document.getElementById('kpiAnnualizedInflation').textContent = '--';
       const cumEl = document.getElementById('kpiCumulativeInflation');
@@ -408,7 +410,11 @@
       navDateHorizon.innerHTML = `<strong>Date Horizon:</strong> ${formatDateShort(minD)} &ndash; ${formatDateShort(maxD)} (${spanY} yrs)`;
     }
     const whList = state.receipts.map((r) => r.warehouseName).filter(Boolean);
-    const primaryWh = whList[0] || 'Costco Warehouse';
+    const primaryWh = whList[0] || 'Wholesale';
+    const headerWhBadge = document.getElementById('headerWarehouseBadge');
+    if (headerWhBadge) {
+      headerWhBadge.textContent = `COSTCO ${primaryWh.toUpperCase()}`;
+    }
     if (navWarehouseName) {
       navWarehouseName.innerHTML = `<strong>Warehouse:</strong> ${primaryWh}`;
     }
@@ -907,7 +913,7 @@
       card.innerHTML = `
         <div class="ledger-card-top">
           <div>
-            <div class="ledger-warehouse-name">${r.warehouseName || 'CARLSBAD #462'} WAREHOUSE</div>
+            <div class="ledger-warehouse-name">${(r.warehouseName || 'COSTCO').toUpperCase()} WAREHOUSE</div>
             <div class="ledger-barcode">${formatDateShort(r.transactionDateTime || r.transactionDate)} &bull; ${r.transactionBarcode || 'N/A'}</div>
           </div>
           <div class="ledger-total">${formatCurrency(r.total)}</div>
@@ -1016,14 +1022,15 @@
       });
     });
 
-    // Theme toggle & state persistence
+    // Theme toggle & state persistence (discrete icon)
     const themeBtn = document.getElementById('themeToggleBtn');
-    const themeLabel = document.getElementById('themeLabelText');
 
     function applyTheme(theme) {
       document.documentElement.setAttribute('data-theme', theme);
-      if (themeLabel) {
-        themeLabel.textContent = theme === 'dark' ? 'Dark Terminal' : 'Executive Light';
+      if (themeBtn) {
+        const nextMode = theme === 'dark' ? 'light' : 'dark';
+        themeBtn.setAttribute('title', `Switch to ${nextMode} mode`);
+        themeBtn.setAttribute('aria-label', `Switch to ${nextMode} mode`);
       }
       try {
         localStorage.setItem('pinflation_theme', theme);

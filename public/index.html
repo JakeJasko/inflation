@@ -31,7 +31,7 @@
           <div class="brand-title-wrap">
             <h1 class="brand-title">PINFLATION TERMINAL</h1>
             <span class="institutional-badge">INSTITUTIONAL GRADE</span>
-            <span class="costco-badge">COSTCO #462 CARLSBAD</span>
+            <span class="costco-badge" id="headerWarehouseBadge">COSTCO WHOLESALE</span>
           </div>
           <p class="brand-sub">Personalized Consumer Price Index, SKU Inflation Attribution &amp; Capital Drag Analytics</p>
         </div>
@@ -44,8 +44,8 @@
         </div>
 
         <div class="theme-toggle-wrap">
-          <button type="button" class="btn-theme" id="themeToggleBtn" aria-label="Toggle Light/Dark Financial Theme" title="Toggle Light/Dark Financial Theme">
-            <svg class="theme-icon-sun" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <button type="button" class="btn-theme-icon" id="themeToggleBtn" aria-label="Switch to dark theme" title="Switch to dark theme">
+            <svg class="theme-icon-sun" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <circle cx="12" cy="12" r="5"></circle>
               <line x1="12" y1="1" x2="12" y2="3"></line>
               <line x1="12" y1="21" x2="12" y2="23"></line>
@@ -56,10 +56,9 @@
               <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
               <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
             </svg>
-            <svg class="theme-icon-moon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <svg class="theme-icon-moon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
               <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
             </svg>
-            <span class="theme-label" id="themeLabelText">Executive Light</span>
           </button>
         </div>
 
@@ -520,7 +519,7 @@
 
         <details class="paste-json-details">
           <summary>Or paste raw JSON</summary>
-          <textarea id="rawJsonTextarea" rows="4" placeholder='Paste [{"warehouseName": "CARLSBAD", "itemArray": [...]}] here...'></textarea>
+          <textarea id="rawJsonTextarea" rows="4" placeholder='Paste [{"warehouseName": "WAREHOUSE", "itemArray": [...]}] here...'></textarea>
           <button type="button" class="btn-terminal-primary btn-sm" id="importPastedJsonBtn">Import Pasted JSON</button>
         </details>
       </div>
