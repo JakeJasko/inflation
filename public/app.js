@@ -263,7 +263,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.7';
+  const APP_VERSION = '2.7.8';
   const state = {
     source: 'live',
     receipts: [],
@@ -1082,10 +1082,12 @@
 
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
-    const width = Math.max(rect.width, 320);
+    const width = Math.max(canvas.clientWidth || rect.width, 320);
     const height = 320;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
@@ -1179,11 +1181,20 @@
     if (!canvas || !item || item.history.length === 0) return;
 
     const dpr = window.devicePixelRatio || 1;
-    const rect = canvas.parentElement.getBoundingClientRect();
-    const width = Math.max(rect.width, 220);
+    const parent = canvas.parentElement;
+    const parentPadding = parent
+      ? parseFloat(getComputedStyle(parent).paddingLeft || '12') + parseFloat(getComputedStyle(parent).paddingRight || '12')
+      : 24;
+    const width = Math.max(
+      canvas.clientWidth || (parent ? parent.clientWidth - parentPadding : 0),
+      220
+    );
     const height = 170;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);
@@ -1206,7 +1217,7 @@
 
     const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     ctx.font = '11px "JetBrains Mono", monospace';
-    ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
+    ctx.fillStyle = isDark ? '#94a3b8' : '#475569';
     ctx.textAlign = 'right';
 
     for (let i = 0; i <= 2; i++) {
@@ -1594,10 +1605,12 @@
 
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
-    const width = Math.max(rect.width, 320);
+    const width = Math.max(canvas.clientWidth || rect.width, 320);
     const height = 420;
-    canvas.width = width * dpr;
-    canvas.height = height * dpr;
+    canvas.width = Math.round(width * dpr);
+    canvas.height = Math.round(height * dpr);
+    canvas.style.width = `${width}px`;
+    canvas.style.height = `${height}px`;
 
     const ctx = canvas.getContext('2d');
     ctx.scale(dpr, dpr);

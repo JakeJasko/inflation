@@ -66,6 +66,10 @@
   box-sizing: border-box;
 }
 
+canvas {
+  max-width: 100%;
+}
+
 [hidden] {
   display: none !important;
 }
@@ -1122,6 +1126,19 @@ pre,
   border-radius: var(--radius-sm);
   padding: 0.75rem;
   margin-bottom: 1rem;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.dossier-chart-container canvas,
+#itemDetailCanvas {
+  width: 100% !important;
+  height: 170px !important;
+  display: block;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .dossier-chart-legend {
