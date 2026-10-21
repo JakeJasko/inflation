@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.4.0" />
+  <link rel="stylesheet" href="styles.css?v=2.5.0" />
   <script>
     (function () {
       try {
@@ -34,10 +34,8 @@
               <span class="brand-correction">MY</span>
               <span class="brand-suffix">PRICE INFLATION</span>
             </h1>
-            <span class="institutional-badge">INSTITUTIONAL GRADE</span>
-            <span class="costco-badge" id="headerWarehouseBadge">COSTCO WHOLESALE</span>
           </div>
-          <p class="brand-sub">Personalized Consumer Price Index, SKU Inflation Attribution &amp; Capital Drag Analytics</p>
+          <p class="brand-sub">Personal Consumer Price Index &amp; Grocery Price Tracker</p>
         </div>
       </div>
 
@@ -96,8 +94,8 @@
     </div>
   </header>
 
-  <!-- Executive Financial KPI Strip -->
-  <section class="kpi-strip" aria-label="Executive Financial Exposure Metrics">
+  <!-- Summary Financial Metrics -->
+  <section class="kpi-strip" aria-label="Summary Financial Metrics">
     <div class="kpi-strip-inner">
       <div class="kpi-metric-cell key-exposure">
         <div class="metric-head">
@@ -108,7 +106,7 @@
           <span class="metric-primary-val" id="kpiAnnualizedInflation">--</span>
           <span class="metric-secondary-badge badge-neutral" id="kpiCumulativeInflation">-- cumulative</span>
         </div>
-        <p class="metric-foot">Laspeyres quantity-weighted repeat staple basket</p>
+        <p class="metric-foot">Quantity-weighted repeat grocery basket</p>
       </div>
 
       <div class="kpi-metric-cell">
@@ -125,7 +123,7 @@
 
       <div class="kpi-metric-cell">
         <div class="metric-head">
-          <span class="metric-caption">ANNUAL CAPITAL DRAG</span>
+          <span class="metric-caption">ANNUAL INFLATION COST</span>
           <span class="metric-tag tag-neutral" id="kpiBasketCountPill">0 Repeat SKUs</span>
         </div>
         <div class="metric-body">
@@ -137,30 +135,30 @@
 
       <div class="kpi-metric-cell">
         <div class="metric-head">
-          <span class="metric-caption">SAVINGS SHIELD RATIO</span>
-          <span class="metric-tag tag-neutral">INSTANT PROMOTIONS</span>
+          <span class="metric-caption">DISCOUNT SAVINGS RATE</span>
+          <span class="metric-tag tag-neutral">INSTANT SAVINGS</span>
         </div>
         <div class="metric-body">
           <span class="metric-primary-val text-emerald" id="kpiShieldRatio">--</span>
           <span class="metric-secondary-badge badge-neutral" id="kpiTotalSavingsCaptured">$0.00 Saved</span>
         </div>
-        <p class="metric-foot" id="kpiShieldSubtext">Share of gross price inflation absorbed by Costco discounts</p>
+        <p class="metric-foot" id="kpiShieldSubtext">Share of price increases offset by instant savings &amp; discounts</p>
       </div>
     </div>
   </section>
 
-  <!-- Financial Navigation Sub-Bar -->
-  <nav class="terminal-nav" aria-label="Terminal Viewports">
+  <!-- Navigation Bar -->
+  <nav class="terminal-nav" aria-label="Terminal Views">
     <div class="terminal-nav-inner">
       <div class="nav-tabs-group" role="tablist">
         <button type="button" class="nav-tab-btn active" data-view="view-attribution" role="tab" aria-selected="true">
-          SKU Inflation Attribution Matrix
+          SKU Price Inflation
         </button>
         <button type="button" class="nav-tab-btn" data-view="view-macro" role="tab" aria-selected="false">
-          Macro CPI Trajectory &amp; Projections
+          Macro CPI &amp; Projections
         </button>
         <button type="button" class="nav-tab-btn" data-view="view-ledger" role="tab" aria-selected="false" id="tabLedgerBtn">
-          Warehouse Transaction Ledger <span id="ledgerTabCount">(0 Receipts)</span>
+          Receipt Ledger <span id="ledgerTabCount">(0 Receipts)</span>
         </button>
       </div>
 
@@ -186,10 +184,9 @@
             <polyline points="10 9 9 9 8 9"></polyline>
           </svg>
         </div>
-        <span class="institutional-badge">AWAITING RECEIPT INGESTION</span>
         <h2 class="empty-terminal-title">Connect Your Costco Account</h2>
         <p class="empty-terminal-sub">
-          Import your Costco warehouse receipts to calculate your personalized Consumer Price Index (CPI), track SKU-level price changes over time, and quantify your annual grocery capital drag.
+          Import your Costco receipts to calculate your personal inflation rate vs. the US CPI benchmark, track price changes across individual items, and see your true grocery spending trends.
         </p>
         <div class="empty-terminal-actions">
           <button type="button" class="btn-terminal-primary btn-lg" id="emptyStateOpenSyncBtn" data-action="open-connector">
@@ -272,7 +269,7 @@
           </div>
 
           <div class="table-container">
-            <table class="terminal-table" role="table" aria-label="SKU Inflation Attribution Table">
+            <table class="terminal-table" role="table" aria-label="SKU Price Inflation Table">
               <thead>
                 <tr>
                   <th scope="col">Costco SKU</th>
@@ -280,10 +277,10 @@
                   <th scope="col">Dept</th>
                   <th scope="col" class="num-col">Spend Weight</th>
                   <th scope="col" class="num-col">Orders</th>
-                  <th scope="col" class="num-col">Base Price</th>
+                  <th scope="col" class="num-col">First Price</th>
                   <th scope="col" class="num-col">Latest Price</th>
-                  <th scope="col">Price Trajectory</th>
-                  <th scope="col" class="num-col">Dollar Drag</th>
+                  <th scope="col">Price Trend</th>
+                  <th scope="col" class="num-col">Added Cost</th>
                   <th scope="col" class="num-col">Inflation</th>
                 </tr>
               </thead>
@@ -292,30 +289,30 @@
           </div>
         </section>
 
-        <!-- Dedicated SKU Financial Dossier (Fixed Right Rail) -->
-        <aside class="workspace-rail-panel" id="itemInspectorPanel" aria-label="SKU Financial Dossier">
+        <!-- Item Price Details (Fixed Right Rail) -->
+        <aside class="workspace-rail-panel" id="itemInspectorPanel" aria-label="Item Price Details">
           <div class="rail-header">
             <div>
               <span class="dossier-sku" id="inspectorSku">SKU #------</span>
-              <h2 class="dossier-title" id="inspectorTitle">Select an Asset</h2>
-              <p class="dossier-sub" id="inspectorSubtitle">Click any SKU row to inspect price trajectory and promo lines</p>
+              <h2 class="dossier-title" id="inspectorTitle">Select an Item</h2>
+              <p class="dossier-sub" id="inspectorSubtitle">Click any item in the table to view price history and discounts</p>
             </div>
             <div class="dossier-inflation-badge" id="inspectorDeltaBadge">--%</div>
           </div>
 
           <div class="dossier-stats-grid">
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">Initial Baseline</span>
+              <span class="dossier-stat-label">First Price</span>
               <span class="dossier-stat-val" id="inspFirstPrice">--</span>
               <span class="dossier-stat-sub" id="inspFirstDate">--</span>
             </div>
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">Latest Quoted</span>
+              <span class="dossier-stat-label">Latest Price</span>
               <span class="dossier-stat-val" id="inspLatestPrice">--</span>
               <span class="dossier-stat-sub" id="inspLatestDate">--</span>
             </div>
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">Annualized CAGR</span>
+              <span class="dossier-stat-label">Annualized Rate</span>
               <span class="dossier-stat-val" id="inspAnnualized">--</span>
               <span class="dossier-stat-sub" id="inspTotalUnits">-- units bought</span>
             </div>
@@ -331,7 +328,7 @@
 
           <div class="dossier-history-section">
             <div class="dossier-history-head">
-              <h3>Transaction &amp; Coupon Audit</h3>
+              <h3>Purchase &amp; Discount History</h3>
               <span id="inspectorHistoryCount">0 transactions</span>
             </div>
             <div class="dossier-history-list" id="inspectorHistoryList"></div>
@@ -372,29 +369,29 @@
         </section>
       </div>
 
-      <!-- Forward Scenario Planner -->
+      <!-- Forward Spending Projection -->
       <section class="scenario-panel">
         <div class="scenario-header">
           <div>
-            <h2 class="macro-title">Forward 12-Month Grocery Capital Projection</h2>
-            <p class="macro-sub">Estimated forward annual budget requirement based on your 3-year historical personal CPI slope</p>
+            <h2 class="macro-title">12-Month Grocery Spending Projection</h2>
+            <p class="macro-sub">Estimated annual grocery spend based on your historical inflation trend</p>
           </div>
         </div>
         <div class="scenario-body" id="scenarioPlannerBody">
           <div class="scenario-metric-box">
-            <span class="scenario-label">Historical 3-Yr Baseline Spend</span>
+            <span class="scenario-label">Baseline Annual Spend</span>
             <span class="scenario-val" id="scenBaseSpend">$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">Forward 12-Mo Projected Budget</span>
+            <span class="scenario-label">12-Month Projected Spend</span>
             <span class="scenario-val text-amber" id="scenProjectedSpend">$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">Projected Inflation Premium</span>
+            <span class="scenario-label">Projected Price Increase</span>
             <span class="scenario-val text-crimson" id="scenDeltaSpend">+$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">Projected Promo Buffer (Instant Savings)</span>
+            <span class="scenario-label">Projected Instant Savings</span>
             <span class="scenario-val text-emerald" id="scenSavingsBuffer">-$0.00</span>
           </div>
         </div>
@@ -406,8 +403,8 @@
       <section class="ledger-panel">
         <div class="ledger-header">
           <div>
-            <h2 class="macro-title">Warehouse Transaction Audit Ledger</h2>
-            <p class="macro-sub">Full cryptographic point-of-sale receipt register with line item barcodes, discounts, and tax splits</p>
+            <h2 class="macro-title">Warehouse Receipt Ledger</h2>
+            <p class="macro-sub">Detailed receipt register with item barcodes, discounts, and tax breakdown</p>
           </div>
           <div class="ledger-filter">
             <input
@@ -428,7 +425,6 @@
     <div class="modal-content">
       <div class="modal-header">
         <div>
-          <span class="costco-badge">COSTCO GRAPHQL REPOSITORY</span>
           <h2 id="syncModalTitle" class="modal-title">Costco Warehouse Data Connector</h2>
         </div>
         <form method="dialog">
@@ -560,6 +556,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.4.0"></script>
+  <script src="app.js?v=2.5.0"></script>
 </body>
 </html>

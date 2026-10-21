@@ -357,8 +357,6 @@
       if (ledgerTabCount) ledgerTabCount.textContent = '(0 Receipts)';
       if (navDateHorizon) navDateHorizon.innerHTML = '<strong>Date Horizon:</strong> Awaiting data';
       if (navWarehouseName) navWarehouseName.innerHTML = '<strong>Warehouse:</strong> Connect account';
-      const headerWhBadge = document.getElementById('headerWarehouseBadge');
-      if (headerWhBadge) headerWhBadge.textContent = 'COSTCO WHOLESALE';
 
       document.getElementById('kpiAnnualizedInflation').textContent = '--';
       const cumEl = document.getElementById('kpiCumulativeInflation');
@@ -420,10 +418,6 @@
     }
     const whList = state.receipts.map((r) => r.warehouseName).filter(Boolean);
     const primaryWh = whList[0] || 'Wholesale';
-    const headerWhBadge = document.getElementById('headerWarehouseBadge');
-    if (headerWhBadge) {
-      headerWhBadge.textContent = `COSTCO ${primaryWh.toUpperCase()}`;
-    }
     if (navWarehouseName) {
       navWarehouseName.innerHTML = `<strong>Warehouse:</strong> ${primaryWh}`;
     }
@@ -976,7 +970,7 @@
   function exportSkuCsv() {
     if (!state.analytics || !state.analytics.skuList) return;
     const rows = [
-      ['Item #', 'Description', 'Department', 'Spend Weight (%)', 'Purchases', 'Total Units', 'First Price', 'First Date', 'Latest Price', 'Latest Date', 'Dollar Drag ($)', 'Inflation (%)', 'Annualized YoY (%)']
+      ['Item #', 'Description', 'Department', 'Spend Weight (%)', 'Purchases', 'Total Units', 'First Price', 'First Date', 'Latest Price', 'Latest Date', 'Added Cost ($)', 'Inflation (%)', 'Annualized YoY (%)']
     ];
     for (const item of state.analytics.skuList) {
       rows.push([
