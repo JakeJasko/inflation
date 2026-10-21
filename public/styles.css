@@ -39,25 +39,25 @@
 }
 
 [data-theme="light"] {
-  --bg-app: #f4f6f9;
+  --bg-app: #f8fafc;
   --bg-surface: #ffffff;
-  --bg-surface-elevated: #f8fafc;
-  --bg-surface-hover: #edf2f7;
+  --bg-surface-elevated: #f1f5f9;
+  --bg-surface-hover: #e2e8f0;
   --bg-input: #ffffff;
   --border-subtle: #cbd5e1;
-  --border-focus: #0284c7;
+  --border-focus: #0369a1;
   --text-primary: #0f172a;
   --text-secondary: #334155;
-  --text-muted: #64748b;
+  --text-muted: #475569;
   
-  --fin-crimson: #e11d48;
-  --fin-crimson-bg: rgba(225, 29, 72, 0.10);
-  --fin-emerald: #059669;
-  --fin-emerald-bg: rgba(5, 150, 105, 0.10);
-  --fin-amber: #d97706;
-  --fin-amber-bg: rgba(217, 119, 6, 0.10);
-  --fin-cyan: #0284c7;
-  --fin-cyan-bg: rgba(2, 132, 199, 0.10);
+  --fin-crimson: #be123c;
+  --fin-crimson-bg: rgba(190, 18, 60, 0.06);
+  --fin-emerald: #047857;
+  --fin-emerald-bg: rgba(4, 120, 87, 0.08);
+  --fin-amber: #92400e;
+  --fin-amber-bg: rgba(146, 64, 14, 0.08);
+  --fin-cyan: #0369a1;
+  --fin-cyan-bg: rgba(3, 105, 161, 0.08);
 }
 
 *,
@@ -172,9 +172,13 @@ pre,
   letter-spacing: 0.04em;
   padding: 0.15rem 0.5rem;
   border-radius: var(--radius-sm);
+  background: rgba(227, 24, 55, 0.08);
+  color: #b91c1c;
+  border: 1px solid rgba(227, 24, 55, 0.28);
+}
+[data-theme="dark"] .costco-badge {
   background: rgba(227, 24, 55, 0.12);
   color: #ff6b81;
-  border: 1px solid rgba(227, 24, 55, 0.28);
 }
 
 .brand-sub {
@@ -211,6 +215,9 @@ pre,
 }
 
 .btn-theme {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
   background: var(--bg-surface-elevated);
   border: 1px solid var(--border-subtle);
   color: var(--text-secondary);
@@ -224,6 +231,25 @@ pre,
 .btn-theme:hover {
   background: var(--bg-surface-hover);
   color: var(--text-primary);
+}
+
+.theme-icon-sun,
+.theme-icon-moon {
+  flex-shrink: 0;
+}
+[data-theme="light"] .theme-icon-sun {
+  display: inline-block;
+  color: #d97706;
+}
+[data-theme="light"] .theme-icon-moon {
+  display: none;
+}
+[data-theme="dark"] .theme-icon-sun {
+  display: none;
+}
+[data-theme="dark"] .theme-icon-moon {
+  display: inline-block;
+  color: var(--fin-cyan);
 }
 
 .segmented-basis {
@@ -320,7 +346,7 @@ pre,
 }
 
 .kpi-metric-cell.key-exposure {
-  border-left: 3px solid var(--fin-crimson);
+  background: var(--fin-crimson-bg);
 }
 
 .metric-head {
@@ -604,7 +630,7 @@ pre,
 
 .terminal-table tbody tr.selected {
   background: rgba(0, 93, 170, 0.15);
-  border-left: 3px solid var(--costco-blue);
+  box-shadow: inset 2px 0 0 var(--costco-blue);
 }
 
 .terminal-table td {

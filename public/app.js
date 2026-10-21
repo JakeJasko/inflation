@@ -726,7 +726,7 @@
     const yFor = (p) => pad.top + plotH - ((p - minP) / span) * plotH;
 
     const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
-    ctx.font = '10px "JetBrains Mono", monospace';
+    ctx.font = '11px "JetBrains Mono", monospace';
     ctx.fillStyle = isDark ? '#94a3b8' : '#64748b';
     ctx.textAlign = 'right';
 
@@ -955,16 +955,34 @@
       });
     });
 
-    // Theme toggle
+    // Theme toggle & state persistence
     const themeBtn = document.getElementById('themeToggleBtn');
     const themeLabel = document.getElementById('themeLabelText');
-    themeBtn.addEventListener('click', () => {
-      const current = document.documentElement.getAttribute('data-theme') || 'dark';
-      const next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      themeLabel.textContent = next === 'dark' ? 'Dark Terminal' : 'Executive Light';
-      renderTerminal();
-    });
+
+    function applyTheme(theme) {
+      document.documentElement.setAttribute('data-theme', theme);
+      if (themeLabel) {
+        themeLabel.textContent = theme === 'dark' ? 'Dark Terminal' : 'Executive Light';
+      }
+      try {
+        localStorage.setItem('pinflation_theme', theme);
+      } catch (_) {}
+    }
+
+    const currentTheme =
+      document.documentElement.getAttribute('data-theme') ||
+      localStorage.getItem('pinflation_theme') ||
+      'light';
+    applyTheme(currentTheme);
+
+    if (themeBtn) {
+      themeBtn.addEventListener('click', () => {
+        const activeTheme = document.documentElement.getAttribute('data-theme') || 'light';
+        const nextTheme = activeTheme === 'dark' ? 'light' : 'dark';
+        applyTheme(nextTheme);
+        renderTerminal();
+      });
+    }
   }
 
   function setupDialog() {
