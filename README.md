@@ -1,8 +1,10 @@
-# Pinflation Terminal
+# My Price Inflation (MPI)
 
-An institutional-grade **Personal Consumer Price Index (CPI)** and capital drag workstation tailored for tracking real warehouse grocery inflation from Costco purchase history.
+A personalized **Consumer Price Index (CPI)** and capital drag workstation tailored for tracking real warehouse grocery inflation from Costco purchase history.
 
 Designed according to [Impeccable](https://impeccable.style)'s **Operate Mode** standards: high data density, zero AI-slop glows, dual Dark Terminal / Executive Light themes, and rigorous econometric attribution.
+
+Live at: **[https://jakejasko.com/inflation/](https://jakejasko.com/inflation/)**
 
 ---
 
@@ -12,7 +14,7 @@ Designed according to [Impeccable](https://impeccable.style)'s **Operate Mode** 
 - **Shelf List Basis vs. Net Paid Basis**: Isolates underlying product price inflation from promotional volatility by linking Costco's negative Instant Savings lines (`/<itemNumber>`) back to parent items.
 - **US BLS Food-at-Home Benchmark**: Side-by-side spread against the official 2.9%/yr national CPI benchmark.
 - **Annual Capital Drag & Savings Shield Ratio**: Computes exact dollar increases on annual staple spending and measures how effectively promotional rebates insulate against price hikes.
-- **SKU Inflation Attribution Matrix**: Portfolio allocation table showing spend weight (%), purchase frequency, baseline vs. latest quotes, sparklines, and annualized YoY rates.
+- **SKU Inflation Attribution Matrix**: Portfolio allocation table showing spend weight (%), purchase frequency, baseline vs. latest quotes, sparklines, cumulative inflation, and annualized YoY CAGR.
 - **Forward 12-Month Grocery Budget Projection**: Forward regression forecast estimating annual budget requirements and promotional buffers.
 - **10-Second Client-Side Ingestion**: Run a browser console script on Costco.com to export receipts without sharing credentials.
 - **Privacy & Security First**: Zero personal credentials, tokens, or live receipts are stored in the git repository or exposed to public hosts.
@@ -23,8 +25,8 @@ Designed according to [Impeccable](https://impeccable.style)'s **Operate Mode** 
 
 ```bash
 # Clone the repository
-git clone https://github.com/JakeJasko/pinflation.git
-cd pinflation
+git clone https://github.com/JakeJasko/inflation.git
+cd inflation
 
 # Start local server
 npm start
