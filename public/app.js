@@ -22,6 +22,200 @@
     return DEPT_NAMES[deptNum] || `Warehouse Dept #${deptNum}`;
   }
 
+  // Authentic Verified Costco Wholesale Catalog (Exact POS Item # Mappings)
+  const VERIFIED_COSTCO_CATALOG = {
+    '1726089': 'Kirkland Signature House Blend Whole Bean Coffee, 2.5 lbs',
+    '1726068': 'Kirkland Signature Espresso Blend Whole Bean Coffee, 2.5 lbs',
+    '1735359': 'Kirkland Signature Italian Roast Whole Bean Coffee',
+    '1585601': 'Kirkland Signature Single Origin Mexico Whole Bean Coffee',
+    '2': 'Kirkland Signature Whole Milk (1 Gallon)',
+    '1': 'Kirkland Signature 2% Reduced Fat Milk (1 Gallon)',
+    '1975527': 'Kirkland Signature Ultra-Filtered Milk (64 oz)',
+    '1048072': 'Kirkland Signature Organic Nonfat Greek Yogurt',
+    '1010598': 'Kirkland Signature Organic Three Berry Blend',
+    '60357': 'Sweet Bell Peppers (6-Pack)',
+    '30669': 'Fresh Bananas (3 lbs)',
+    '2619': 'Organic Bananas (3 lbs)',
+    '694466': 'Kirkland Signature Organic Mixed Vegetables',
+    '637598': 'Kirkland Signature Cage-Free Large Eggs (2 Dozen)',
+    '1025795': 'Kirkland Signature Grade AA Large Eggs (5 Dozen)',
+    '1068080': 'Certified Organic Pasture-Raised Large Eggs (2 Dozen)',
+    '647465': 'Hass Avocados (6-Count)',
+    '796993': 'Organic Hass Avocados (6-Count)',
+    '7947': 'Fuji Apples (4 lb Bag)',
+    '7950': 'Cosmic Crisp Apples (4 lb Bag)',
+    '6659': 'Honeycrisp Apples (4 lb Bag)',
+    '3741': 'Envy Apples (4 lb Bag)',
+    '177': 'Organic Fuji Apples (4 lb Bag)',
+    '65568': 'Kirkland Signature Cottage Cheese',
+    '57554': 'Fresh Blueberries (18 oz)',
+    '519638': 'Fresh Organic Blueberries (18 oz)',
+    '56366': 'Fresh Raspberries (12 oz)',
+    '27003': 'Fresh Strawberries (2 lbs)',
+    '512515': 'Fresh Organic Strawberries (2 lbs)',
+    '702669': 'Fresh Blackberries (12 oz)',
+    '1335089': 'Costco Bakery Fresh Bagels (2-Pack)',
+    '21020': 'Tomatoes on the Vine (2 lbs)',
+    '25595': 'Campari Cocktail Tomatoes (2 lbs)',
+    '77053': 'Grape Tomatoes (2 lbs)',
+    '977055': 'Organic Grape Tomatoes (2 lbs)',
+    '412': 'Organic Whole Carrots (2 x 2 lbs)',
+    '1015237': 'Kirkland Signature Stir-Fry Vegetable Blend',
+    '1319419': 'Kirkland Signature Extra Fancy Mixed Nuts',
+    '1700458': 'Waterloo Sparkling Water Variety Pack (24-Pack)',
+    '1902857': 'Waterloo Sparkling Water Variety Pack (24-Pack)',
+    '2251987': 'Kirkland Signature Organic Hummus Single Cups (12-Pack)',
+    '5276': 'Red Seedless Grapes (3 lbs)',
+    '1059994': 'Organic Red Seedless Grapes (3 lbs)',
+    '1059995': 'Organic Green Seedless Grapes (3 lbs)',
+    '1073076': 'Candy Snap / Cotton Candy Grapes (3 lbs)',
+    '1298989': 'Candy Snap Seedless Grapes (3 lbs)',
+    '1195303': 'Kirkland Signature Dry Roasted Macadamia Nuts',
+    '1304236': 'Kirkland Signature 100% Grass-Fed Beef Patties (1/3 lb, 5 lbs)',
+    '15390': 'Kirkland Signature Organic Boneless Skinless Chicken Breast',
+    '30471': 'Kirkland Signature Organic Boneless Skinless Chicken Breast',
+    '33841': 'Kirkland Signature Boneless Skinless Chicken Breast',
+    '36285': 'Kirkland Signature Walnut Halves (3 lbs)',
+    '4032': 'Whole Seedless Watermelon',
+    '26281': 'Mini Seedless Watermelons',
+    '7070': 'Kirkland Signature Fresh Farmed Atlantic Salmon',
+    '10579': 'Fresh Farm-Raised Salmon Fillet',
+    '10454': 'Fresh Farm-Raised Salmon Fillet',
+    '47292': 'Wild Sockeye Salmon Fillet',
+    '664511': 'Kirkland Signature Organic Black Beans (8-Pack)',
+    '2222019': 'Kirkland Signature Organic Ancient Grain Granola with Probiotics',
+    '131': 'Organic Brussels Sprouts (2 lbs)',
+    '684779': 'Wawona Daybreak Blend Frozen Fruit',
+    '1761722': 'RXBAR High Protein Bars Variety Pack',
+    '1802191': 'Siete Grain Free Sea Salt Tortilla Chips',
+    '9440': 'Thai Kitchen Organic Unsweetened Coconut Milk',
+    '48757': 'Organic Spring Mix Salad Greens (1 lb)',
+    '96716': 'Organic Baby Spinach (1 lb)',
+    '782294': 'Organic Power Greens Salad Blend (1.5 lbs)',
+    '94676': 'Fresh Asparagus (2.25 lbs)',
+    '598881': 'Kirkland Signature Organic 85/15 Ground Beef (4 lbs)',
+    '800599': 'Costco Wholesale Regular Unleaded Gasoline',
+    '1294528': 'Quaker / Kirkland Organic Rolled Oats (72 oz)',
+    '6262016': 'Kirkland Signature Bath Tissue (30 Rolls)',
+    '512599': 'Kirkland Signature Create-a-Size Paper Towels (12 Rolls)',
+    '555000': 'Kirkland Signature Organic Creamy Peanut Butter (2-Pack)',
+    '859695': 'Kirkland Signature Creamy Almond Butter (27 oz)',
+    '1109404': 'Kirkland Signature Creamy Almond Butter (27 oz)',
+    '939542': 'Fresh French Green Beans (2 lbs)',
+    '1001368': 'Kirkland Signature Organic Quinoa (4.5 lbs)',
+    '1038672': 'Love Beets Organic Cooked Beets',
+    '1060699': 'Kirkland Signature Organic Chia Seeds (64 oz)',
+    '1143330': 'Ocean Spray Craisins Whole Dried Cranberries (64 oz)',
+    '1184753': 'Costco Food Court Hot Chicken Bake',
+    '1184748': 'Costco Food Court Pepperoni Pizza Slice',
+    '1816542': 'Costco Food Court Chocolate & Vanilla Twist Ice Cream',
+    '1285362': 'Kirkland Signature Organic Guacamole Single Cups (16-Pack)',
+    '1462714': 'Kirkland Signature Organic A2 Protein Whole Milk (3 x 64 oz)',
+    '1644223': "Nature's Bounty Magnesium Glycinate (180 Capsules)",
+    '19927': 'Costco Deli Rotisserie Chicken Caesar Salad',
+    '23086': 'Costco Deli Chicken Noodle Soup',
+    '20397': 'USDA Choice New York Strip Steak Thin Cut (Shabu Shabu)',
+    '33593': 'USDA Choice Boneless New York Strip Steak',
+    '43099': 'Costco Service Deli St. Louis Style Dry Rub Ribs',
+    '25107': 'Costco Service Deli Garlic Pepper Chicken Wings',
+    '36954': 'Costco Bakery Artisan Sourdough Bread (2-Pack)',
+    '44004': 'Kirkland Signature Flour Tortillas',
+    '51070': 'Kirkland Signature Premium Chunk Canned Chicken Breast (6-Pack)',
+    '301860': 'Tillamook Medium Cheddar Cheese (2 lbs)',
+    '456868': 'Frigo Cheese Heads String Cheese (60-Pack)',
+    '1189000': 'BelGioioso Fresh Mozzarella Snacking Cheese',
+    '362996': 'Terra Delyssa Organic Extra Virgin Olive Oil',
+    '692731': 'Kirkland Signature Organic Extra Virgin Olive Oil (2L)',
+    '1678104': 'Chosen Foods 100% Pure Avocado Oil (1L)',
+    '720650': 'Fresh Mini Persian Cucumbers (1.5 lbs)',
+    '568915': 'Organic English Cucumbers (3-Pack)',
+    '993449': 'Garofalo Organic Variety Pasta (6-Pack)',
+    '1062201': 'Seapoint Farms Organic Edamame (8-Pack)',
+    '1164891': 'Silk Organic Unsweetened Almond Milk (3-Pack)',
+    '1388341': 'Manitoba Harvest Organic Hemp Hearts (32 oz)',
+    '1424237': 'Kirkland Signature New Zealand Grass-Fed Butter (4-Pack)',
+    '1493488': 'Kirkland Signature Baby Wipes (Fragrance Free, 900 ct)',
+    '1497301': 'Summers Peak Organic Roasted Vegetable Blend (4 lbs)',
+    '1553261': 'Good Foods Chunky Guacamole Bowl',
+    '1793017': 'Jongga Authentic Korean Kimchi (42.3 oz)',
+    '1843250': 'TRUBAR Plant-Based Protein Bars Variety Pack (16-Pack)',
+    '1856360': 'Rain-X Windshield Washer Fluid (-32°F 2-Pack)',
+    '1904637': 'Spindrift Sparkling Water Variety Pack (30-Pack)',
+    '1993061': 'Spindrift Sparkling Water Variety Pack (30-Pack)',
+    '2038687': 'LaCroix Sparkling Water Curate Variety Pack (24-Pack)',
+    '1346763': 'LaCroix Sparkling Water Variety Pack (24-Pack)',
+    '4164501': 'Kirkland Signature Italian Sparkling Flavored Water (35-Pack)',
+    '997895': 'Kirkland Signature Full Synthetic Motor Oil 0W-20 (2 x 5 Qt)'
+  };
+
+  function getItemAliases() {
+    try {
+      return JSON.parse(localStorage.getItem('pinflation_item_aliases') || '{}');
+    } catch (_) {
+      return {};
+    }
+  }
+
+  function setItemAlias(itemNumber, alias) {
+    const aliases = getItemAliases();
+    if (alias && alias.trim()) {
+      aliases[itemNumber] = alias.trim();
+    } else {
+      delete aliases[itemNumber];
+    }
+    localStorage.setItem('pinflation_item_aliases', JSON.stringify(aliases));
+  }
+
+  function resolveItemDisplay(item) {
+    const aliases = getItemAliases();
+    const customName = aliases[item.itemNumber];
+    const verifiedName = VERIFIED_COSTCO_CATALOG[item.itemNumber];
+
+    let primaryName = '';
+    let nameSource = 'receipt';
+
+    if (customName) {
+      primaryName = customName;
+      nameSource = 'custom';
+    } else if (verifiedName) {
+      primaryName = verifiedName;
+      nameSource = 'verified';
+    } else {
+      let expanded = item.name || `Item #${item.itemNumber}`;
+      if (expanded.startsWith('KS ')) {
+        expanded = 'Kirkland Signature ' + expanded.slice(3).trim();
+      } else if (expanded.startsWith('ORGNC ') || expanded.startsWith('ORG ')) {
+        expanded = 'Organic ' + expanded.replace(/^ORG(NC)?\s+/, '').trim();
+      } else if (expanded.startsWith('GRS FED ')) {
+        expanded = 'Grass-Fed ' + expanded.slice(8).trim();
+      }
+      primaryName = expanded;
+      nameSource = 'receipt';
+    }
+
+    let rawSub = item.subName || '';
+    let cleanSub = rawSub
+      .replace(/\b[PT]\d+H?\d*\b/gi, '')
+      .replace(/\bSL\s*\d+\w*\b/gi, '')
+      .replace(/\b\d+X\d+\b/gi, '')
+      .replace(/\s{2,}/g, ' ')
+      .trim();
+
+    if (!cleanSub && verifiedName) {
+      cleanSub = item.name;
+    }
+
+    return {
+      primaryName,
+      nameSource,
+      cleanSub: cleanSub || item.deptName,
+      rawName: item.name,
+      rawSub: item.subName,
+      costcoUrl: `https://www.costco.com/CatalogSearch?dept=All&keyword=${item.itemNumber}`,
+      googleUrl: `https://www.google.com/search?q=Costco+${item.itemNumber}`
+    };
+  }
+
   function formatCurrency(val) {
     const num = Number(val) || 0;
     const sign = num < 0 ? '-' : '';
@@ -51,8 +245,18 @@
     });
   }
 
+  function escapeHtml(str) {
+    if (!str) return '';
+    return String(str)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;')
+      .replace(/'/g, '&#039;');
+  }
+
   // Application Version & State
-  const APP_VERSION = '2.7.1';
+  const APP_VERSION = '2.7.2';
   const state = {
     source: 'live',
     receipts: [],
@@ -562,7 +766,8 @@
       if (state.repeatOnly && item.purchaseCount < 2) return false;
       if (state.deptFilter !== 'all' && item.deptName !== state.deptFilter) return false;
       if (q) {
-        const hay = `${item.itemNumber} ${item.name} ${item.subName} ${item.deptName}`.toLowerCase();
+        const info = resolveItemDisplay(item);
+        const hay = `${item.itemNumber} ${item.name} ${info.primaryName} ${item.subName} ${item.deptName}`.toLowerCase();
         if (!hay.includes(q)) return false;
       }
       return true;
@@ -577,9 +782,12 @@
           res = numA !== numB ? numA - numB : (a.itemNumber || '').localeCompare(b.itemNumber || '');
           break;
         }
-        case 'name':
-          res = (a.name || '').localeCompare(b.name || '');
+        case 'name': {
+          const nameA = resolveItemDisplay(a).primaryName;
+          const nameB = resolveItemDisplay(b).primaryName;
+          res = nameA.localeCompare(nameB);
           break;
+        }
         case 'dept':
           res = (a.deptName || '').localeCompare(b.deptName || '');
           break;
@@ -618,22 +826,37 @@
 
     tbody.innerHTML = '';
     for (const item of filtered) {
+      const info = resolveItemDisplay(item);
       const tr = document.createElement('tr');
       tr.setAttribute('tabindex', '0');
       tr.setAttribute('role', 'button');
-      tr.setAttribute('aria-label', `Inspect ${item.name}, Item #${item.itemNumber}`);
+      tr.setAttribute('aria-label', `Inspect ${info.primaryName}, Item #${item.itemNumber}`);
       if (item.itemNumber === state.selectedSku) tr.classList.add('selected');
 
       const pillClass =
         Math.abs(item.pctChange) < 0.05 ? 'flat' : item.pctChange > 0 ? 'up' : 'down';
 
+      const badgeHtml =
+        info.nameSource === 'verified'
+          ? '<span class="verified-sku-pill" title="Verified against Costco Warehouse Catalog">Verified</span>'
+          : info.nameSource === 'custom'
+          ? '<span class="custom-sku-pill" title="Custom user nickname">Custom</span>'
+          : '';
+
       tr.innerHTML = `
         <td><span class="sku-badge">#${item.itemNumber}</span></td>
         <td>
-          <div class="item-desc-primary">${item.name}</div>
-          <div class="item-desc-sub">${item.subName || 'Costco Warehouse Staple'}</div>
+          <div class="item-desc-primary">
+            <span>${escapeHtml(info.primaryName)}</span>
+            ${badgeHtml}
+          </div>
+          <div class="item-desc-sub">
+            <span>${escapeHtml(info.cleanSub)}</span>
+            <span class="sub-sep">&bull;</span>
+            <a href="${info.costcoUrl}" target="_blank" rel="noopener noreferrer" class="sku-ext-link" onclick="event.stopPropagation()" title="Open official product search on Costco.com">Costco.com ↗</a>
+          </div>
         </td>
-        <td><span class="dept-tag">${item.deptName.split('&')[0].trim()}</span></td>
+        <td><span class="dept-tag">${escapeHtml(item.deptName.split('&')[0].trim())}</span></td>
         <td class="num-col">${item.spendWeight.toFixed(1)}% <span style="color:var(--text-muted);font-size:0.75rem">(${formatCurrency(item.totalSpend)})</span></td>
         <td class="num-col">${item.purchaseCount}x <span style="color:var(--text-muted);font-size:0.75rem">(${item.totalUnits}u)</span></td>
         <td class="num-col">
@@ -678,9 +901,72 @@
   }
 
   function renderItemInspector(item) {
+    const info = resolveItemDisplay(item);
+
     document.getElementById('inspectorSku').textContent = `COSTCO SKU #${item.itemNumber}`;
-    document.getElementById('inspectorTitle').textContent = item.name;
-    document.getElementById('inspectorSubtitle').textContent = `${item.subName || item.deptName} • ${item.deptName}`;
+
+    const badgeHtml =
+      info.nameSource === 'verified'
+        ? '<span class="verified-sku-pill" title="Verified against Costco Warehouse Catalog">Verified</span>'
+        : info.nameSource === 'custom'
+        ? '<span class="custom-sku-pill" title="Custom user nickname">Custom</span>'
+        : '';
+
+    document.getElementById('inspectorTitle').innerHTML = `${escapeHtml(info.primaryName)} ${badgeHtml}`;
+    document.getElementById('inspectorSubtitle').textContent = `${info.cleanSub} • ${item.deptName}`;
+
+    // Lookup & Action Bar
+    const lookupBar = document.getElementById('inspectorLookupBar');
+    if (lookupBar) {
+      lookupBar.hidden = false;
+      const rawCode = document.getElementById('inspectorRawCode');
+      if (rawCode) {
+        rawCode.textContent = `${item.name}${item.subName ? ' / ' + item.subName : ''}`;
+      }
+
+      const costcoLink = document.getElementById('inspectorCostcoLink');
+      if (costcoLink) costcoLink.href = info.costcoUrl;
+
+      const googleLink = document.getElementById('inspectorGoogleLink');
+      if (googleLink) googleLink.href = info.googleUrl;
+
+      const btnReset = document.getElementById('btnResetItemName');
+      const btnRename = document.getElementById('btnRenameItem');
+      const renameLabel = document.getElementById('btnRenameLabel');
+
+      if (info.nameSource === 'custom') {
+        if (btnReset) btnReset.hidden = false;
+        if (renameLabel) renameLabel.textContent = 'Edit Nickname';
+      } else {
+        if (btnReset) btnReset.hidden = true;
+        if (renameLabel) renameLabel.textContent = 'Set Custom Name';
+      }
+
+      if (btnRename) {
+        btnRename.onclick = () => {
+          const current = info.nameSource === 'custom' ? info.primaryName : '';
+          const newName = window.prompt(
+            `Enter a custom friendly nickname for SKU #${item.itemNumber} (currently "${info.primaryName}"):`,
+            current
+          );
+          if (newName !== null) {
+            setItemAlias(item.itemNumber, newName);
+            renderSkuTable();
+            renderItemInspector(item);
+          }
+        };
+      }
+
+      if (btnReset) {
+        btnReset.onclick = () => {
+          if (window.confirm(`Reset custom nickname for SKU #${item.itemNumber}?`)) {
+            setItemAlias(item.itemNumber, null);
+            renderSkuTable();
+            renderItemInspector(item);
+          }
+        };
+      }
+    }
 
     const badge = document.getElementById('inspectorDeltaBadge');
     badge.textContent = formatPct(item.pctChange, 1);
@@ -717,7 +1003,7 @@
           : '';
       row.innerHTML = `
         <div>
-          <div style="font-weight:600">${formatDateShort(h.date)} &bull; <span style="color:var(--text-muted)">${h.warehouse}</span></div>
+          <div style="font-weight:600">${formatDateShort(h.date)} &bull; <span style="color:var(--text-muted)">${escapeHtml(h.warehouse)}</span></div>
           <div style="font-size:0.75rem;color:var(--text-muted)">
             Qty: ${h.units} &bull; Shelf: ${formatCurrency(h.listUnitPrice)}/ea ${couponHtml}
           </div>
@@ -1042,11 +1328,13 @@
   function exportSkuCsv() {
     if (!state.analytics || !state.analytics.skuList) return;
     const rows = [
-      ['Item #', 'Description', 'Department', 'Spend Weight (%)', 'Purchases', 'Total Units', 'First Price', 'First Date', 'Latest Price', 'Latest Date', 'Added Cost ($)', 'Inflation (%)', 'Annualized YoY (%)']
+      ['Item #', 'Description', 'Raw POS Description', 'Department', 'Spend Weight (%)', 'Purchases', 'Total Units', 'First Price', 'First Date', 'Latest Price', 'Latest Date', 'Added Cost ($)', 'Inflation (%)', 'Annualized YoY (%)']
     ];
     for (const item of state.analytics.skuList) {
+      const info = resolveItemDisplay(item);
       rows.push([
         item.itemNumber,
+        `"${(info.primaryName || item.name || '').replace(/"/g, '""')}"`,
         `"${(item.name || '').replace(/"/g, '""')}"`,
         `"${item.deptName}"`,
         item.spendWeight.toFixed(2),

@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.7.1" />
+  <link rel="stylesheet" href="styles.css?v=2.7.2" />
   <script>
     (function () {
       try {
@@ -454,12 +454,29 @@
         <!-- Item Price Details (Fixed Right Rail) -->
         <aside class="workspace-rail-panel" id="itemInspectorPanel" aria-label="Item Price Details">
           <div class="rail-header">
-            <div>
+            <div style="flex:1;min-width:0;">
               <span class="dossier-sku" id="inspectorSku">SKU #------</span>
               <h2 class="dossier-title" id="inspectorTitle">Select an Item</h2>
               <p class="dossier-sub" id="inspectorSubtitle">Click any item in the table to view price history and discounts</p>
             </div>
             <div class="dossier-inflation-badge" id="inspectorDeltaBadge">--%</div>
+          </div>
+
+          <div class="dossier-lookup-bar" id="inspectorLookupBar" hidden>
+            <div class="receipt-raw-label">Receipt POS: <code id="inspectorRawCode">--</code></div>
+            <div class="dossier-actions-strip">
+              <button type="button" class="btn-dossier-action" id="btnRenameItem" title="Assign a custom name or nickname for this SKU">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M17 3a2.828 2.828 0 1 1 4 4L7.5 20.5 2 22l1.5-5.5L17 3z"></path></svg>
+                <span id="btnRenameLabel">Set Custom Name</span>
+              </button>
+              <button type="button" class="btn-dossier-action danger" id="btnResetItemName" hidden title="Reset to original receipt description">Reset</button>
+              <a id="inspectorCostcoLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-dossier-link" title="Open official product search on Costco.com">
+                Costco.com ↗
+              </a>
+              <a id="inspectorGoogleLink" href="#" target="_blank" rel="noopener noreferrer" class="btn-dossier-link" title="Search Google for this Costco item number">
+                Google ↗
+              </a>
+            </div>
           </div>
 
           <div class="dossier-stats-grid">
@@ -591,7 +608,7 @@
         <span>Personal Costco CPI Analytics</span>
       </div>
       <div class="footer-version-wrap">
-        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.1</span>
+        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.2</span>
       </div>
     </div>
   </footer>
@@ -732,6 +749,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.7.1"></script>
+  <script src="app.js?v=2.7.2"></script>
 </body>
 </html>
