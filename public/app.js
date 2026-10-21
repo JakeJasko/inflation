@@ -1038,7 +1038,7 @@
     try {
       const url = mode === 'demo' ? '/api/receipts?mode=demo' : '/api/receipts';
       const res = await fetch(url);
-      if (res.ok) {
+      if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
         state.source = data.source;
         state.receipts = data.receipts;
@@ -1091,7 +1091,7 @@
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ data: parsed, merge: true })
         });
-        if (res.ok) {
+        if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
           const result = await res.json();
           state.source = result.source;
           state.receipts = result.receipts;
@@ -1205,25 +1205,288 @@
     });
 
     document.getElementById('runTokenSyncBtn').addEventListener('click', async () => {
-      const idToken = document.getElementById('costcoIdTokenInput').value.trim();
+      let idToken = document.getElementById('costcoIdTokenInput').value.trim();
       const refreshToken = document.getElementById('costcoRefreshTokenInput').value.trim();
       const yearsBack = Number(document.getElementById('costcoYearsBackSelect').value) || 3;
 
-      try {
-        showStatus('⏳ Querying Costco GraphQL API across 6-month windows...', false);
-        const res = await fetch('/api/sync-costco', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ idToken, refreshToken, yearsBack })
-        });
-        const result = await res.json();
-        if (!res.ok) throw new Error(result.error || 'Sync failed');
+      if (!idToken) {
+        showStatus('⚠️ Please paste your Costco Bearer idToken first.', true);
+        return;
+      }
 
-        state.source = result.source;
-        state.receipts = result.receipts;
+      // Sanitize token: remove 'Bearer ', wrapping quotes, whitespace
+      idToken = idToken.replace(/^Bearer\s+/i, '').replace(/^["']|["']$/g, '').trim();
+
+      // Check token expiration if possible
+      try {
+        const parts = idToken.split('.');
+        if (parts.length === 3) {
+          const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+          if (payload.exp && Date.now() >= payload.exp * 1000) {
+            const expDate = new Date(payload.exp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            showStatus(
+              `⚠️ This Costco idToken expired at ${expDate} (Costco tokens expire after ~1 hour). Please run copy(localStorage.getItem('idToken')) in your Costco console for a fresh token.`,
+              true
+            );
+            return;
+          }
+        }
+      } catch (_) {}
+
+      const isLocalhost =
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1';
+
+      // 1. If running locally with Node daemon, try server endpoint first
+      if (isLocalhost) {
+        try {
+          showStatus('⏳ Querying Costco GraphQL API via local Node daemon...', false);
+          const res = await fetch('/api/sync-costco', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ idToken, refreshToken, yearsBack })
+          });
+          const ct = res.headers.get('content-type') || '';
+          if (res.ok && ct.includes('application/json')) {
+            const result = await res.json();
+            state.source = result.source;
+            state.receipts = result.receipts;
+            localStorage.setItem('pinflation_user_receipts', JSON.stringify(result.receipts));
+            renderTerminal();
+            showStatus(
+              `✅ Successfully synced ${result.fetchedCount} receipts from Costco.com (${result.totalCount} active receipts)!`,
+              false
+            );
+            return;
+          }
+        } catch (serverErr) {
+          console.warn('Local API sync fallback to browser direct fetch:', serverErr.message);
+        }
+      }
+
+      // 2. Direct In-Browser GraphQL Sync (Client-Side for GitHub Pages & static hosting)
+      try {
+        showStatus(`⏳ Initializing direct in-browser Costco GraphQL sync (${yearsBack} years)...`, false);
+
+        const RECEIPT_FIELDS = `
+          warehouseName
+          warehouseShortName
+          warehouseNumber
+          companyNumber
+          receiptType
+          documentType
+          transactionDateTime
+          transactionDate
+          transactionBarcode
+          transactionNumber
+          registerNumber
+          operatorNumber
+          transactionType
+          total
+          subTotal
+          taxes
+          instantSavings
+          totalItemCount
+          membershipNumber
+          warehouseAddress1
+          warehouseCity
+          warehouseState
+          warehousePostalCode
+          itemArray {
+            itemNumber
+            itemDescription01
+            itemDescription02
+            itemIdentifier
+            itemDepartmentNumber
+            unit
+            amount
+            itemUnitPriceAmount
+            taxFlag
+            entryMethod
+            transDepartmentNumber
+            fuelUnitQuantity
+            fuelGradeDescription
+          }
+          couponArray {
+            upcnumberCoupon
+            voidflagCoupon
+            refundflagCoupon
+            taxflagCoupon
+            amountCoupon
+          }
+          tenderArray {
+            tenderTypeCode
+            tenderDescription
+            amountTender
+            displayAccountNumber
+          }
+        `;
+
+        const QUERY_WITH_COUNTS = `
+          query receiptsWithCounts($startDate: String!, $endDate: String!, $documentType: String!, $documentSubType: String!) {
+            receiptsWithCounts(startDate: $startDate, endDate: $endDate, documentType: $documentType, documentSubType: $documentSubType) {
+              inWarehouse
+              gasStation
+              carWash
+              gasAndCarWash
+              receipts {
+                ${RECEIPT_FIELDS}
+              }
+            }
+          }
+        `.replace(/\s+/g, ' ');
+
+        const QUERY_LEGACY = `
+          query receipts($startDate: String!, $endDate: String!) {
+            receipts(startDate: $startDate, endDate: $endDate) {
+              ${RECEIPT_FIELDS}
+            }
+          }
+        `.replace(/\s+/g, ' ');
+
+        function formatMmDdYyyy(date) {
+          const mm = String(date.getMonth() + 1).padStart(2, '0');
+          const dd = String(date.getDate()).padStart(2, '0');
+          const yyyy = date.getFullYear();
+          return `${mm}/${dd}/${yyyy}`;
+        }
+
+        let clientID = '4900eb1f-0c10-4bd9-99c3-c59e6c1ecebf';
+        try {
+          const parts = idToken.split('.');
+          if (parts.length === 3) {
+            const payload = JSON.parse(atob(parts[1].replace(/-/g, '+').replace(/_/g, '/')));
+            if (payload.clientId) clientID = payload.clientId;
+          }
+        } catch (_) {}
+
+        async function fetchWindowDirect(startDateStr, endDateStr) {
+          const headers = {
+            'Accept': '*/*',
+            'Content-Type': 'application/json-patch+json',
+            'Costco.Env': 'ecom',
+            'Costco.Service': 'restOrders',
+            'Costco-X-Wcs-Clientid': clientID,
+            'Client-Identifier': '481b1aec-aa3b-454b-b81b-48187e28f205',
+            'Costco-X-Authorization': `Bearer ${idToken}`
+          };
+
+          // 1. Try modern query
+          let res = await fetch('https://ecom-api.costco.com/ebusiness/order/v1/orders/graphql', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              query: QUERY_WITH_COUNTS,
+              variables: {
+                startDate: startDateStr,
+                endDate: endDateStr,
+                documentType: 'all',
+                documentSubType: 'all'
+              }
+            })
+          });
+
+          if (res.ok) {
+            const json = await res.json();
+            const rc = json?.data?.receiptsWithCounts;
+            if (rc) {
+              const list = Array.isArray(rc) ? rc[0]?.receipts : rc.receipts;
+              if (Array.isArray(list)) return list;
+            }
+          }
+
+          // 2. Fallback to legacy query
+          res = await fetch('https://ecom-api.costco.com/ebusiness/order/v1/orders/graphql', {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+              query: QUERY_LEGACY,
+              variables: {
+                startDate: startDateStr,
+                endDate: endDateStr
+              }
+            })
+          });
+
+          if (res.ok) {
+            const json = await res.json();
+            const list = json?.data?.receipts;
+            if (Array.isArray(list)) return list;
+          }
+
+          let errDetail = '';
+          try {
+            const errJson = await res.json();
+            errDetail = errJson?.errors?.[0]?.message || errJson?.message || '';
+          } catch (_) {}
+          throw new Error(errDetail || `HTTP ${res.status} (${res.statusText || 'GraphQL Error'})`);
+        }
+
+        const now = new Date();
+        const totalMonths = yearsBack * 12;
+        const windowMonths = 6;
+        const allFetched = [];
+        let failureCount = 0;
+        let lastErr = '';
+
+        for (let offset = 0; offset < totalMonths; offset += windowMonths) {
+          const end = new Date(now.getFullYear(), now.getMonth() - offset, now.getDate());
+          const start = new Date(now.getFullYear(), now.getMonth() - (offset + windowMonths), now.getDate());
+          const startStr = formatMmDdYyyy(start);
+          const endStr = formatMmDdYyyy(end);
+
+          showStatus(
+            `⏳ Fetching window ${startStr} – ${endStr}... (${allFetched.length} receipts collected so far)`,
+            false
+          );
+
+          try {
+            const windowReceipts = await fetchWindowDirect(startStr, endStr);
+            if (Array.isArray(windowReceipts)) {
+              allFetched.push(...windowReceipts);
+            }
+          } catch (wErr) {
+            failureCount++;
+            lastErr = wErr.message;
+            console.warn(`Window ${startStr} - ${endStr} error:`, wErr.message);
+          }
+        }
+
+        if (allFetched.length === 0 && failureCount > 0) {
+          throw new Error(
+            `Costco API returned: ${lastErr}. Check that your idToken is fresh (tokens expire after ~1 hour). If needed, run the Option 2 console script in your Costco tab.`
+          );
+        }
+
+        // Deduplicate and merge with existing localStorage receipts
+        const byKey = new Map();
+        for (const r of allFetched) {
+          const k = r.transactionBarcode || `${r.transactionDateTime || r.transactionDate}-${r.total}`;
+          if (!byKey.has(k)) byKey.set(k, r);
+        }
+        const incoming = Array.from(byKey.values());
+
+        let existing = [];
+        const stored = localStorage.getItem('pinflation_user_receipts');
+        if (stored) {
+          try { existing = JSON.parse(stored); } catch (_) {}
+        }
+        for (const r of existing) {
+          const k = r.transactionBarcode || `${r.transactionDateTime || r.transactionDate}-${r.total}`;
+          if (!byKey.has(k)) byKey.set(k, r);
+        }
+
+        const merged = Array.from(byKey.values()).sort(
+          (a, b) => new Date(b.transactionDateTime || 0) - new Date(a.transactionDateTime || 0)
+        );
+
+        localStorage.setItem('pinflation_user_receipts', JSON.stringify(merged));
+        state.source = 'live';
+        state.receipts = merged;
         renderTerminal();
+
         showStatus(
-          `✅ Successfully synced ${result.fetchedCount} receipts from Costco.com (${result.totalCount} active receipts)!`,
+          `✅ Successfully synced ${incoming.length} receipts directly from Costco.com (${merged.length} active in browser)!`,
           false
         );
       } catch (err) {
