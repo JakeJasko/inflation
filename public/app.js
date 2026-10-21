@@ -338,18 +338,79 @@
 
   // UI Renderers
   function renderTerminal() {
+    const dot = document.getElementById('statusDot');
+    const sourceText = document.getElementById('dataSourceText');
+    const ledgerTabCount = document.getElementById('ledgerTabCount');
+    const navDateHorizon = document.getElementById('navDateHorizon');
+    const navWarehouseName = document.getElementById('navWarehouseName');
+    const activeCountLabel = document.getElementById('activeReceiptsCountLabel');
+    const emptyPane = document.getElementById('emptyTerminalPane');
+
+    if (activeCountLabel) {
+      activeCountLabel.textContent = `${state.receipts ? state.receipts.length : 0} Receipts`;
+    }
+
+    // Zero-receipt empty state handling
+    if (!state.receipts || state.receipts.length === 0) {
+      if (dot) dot.className = 'status-indicator';
+      if (sourceText) sourceText.textContent = 'No Receipts Connected';
+      if (ledgerTabCount) ledgerTabCount.textContent = '(0 Receipts)';
+      if (navDateHorizon) navDateHorizon.innerHTML = '<strong>Date Horizon:</strong> Awaiting data';
+      if (navWarehouseName) navWarehouseName.innerHTML = '<strong>Warehouse:</strong> Connect account';
+
+      document.getElementById('kpiAnnualizedInflation').textContent = '--';
+      const cumEl = document.getElementById('kpiCumulativeInflation');
+      cumEl.textContent = '-- cumulative';
+      cumEl.className = 'metric-secondary-badge badge-neutral';
+
+      document.getElementById('kpiPersonalCpiIndex').textContent = '--';
+      const spreadEl = document.getElementById('kpiCpiSpread');
+      spreadEl.textContent = '-- vs. BLS';
+      spreadEl.className = 'metric-secondary-badge badge-neutral';
+
+      document.getElementById('kpiBasketCountPill').textContent = '0 Repeat SKUs';
+      document.getElementById('kpiExtraSpend').textContent = '--';
+      document.getElementById('kpiBasketTotals').textContent = '$0.00 → $0.00';
+
+      document.getElementById('kpiShieldRatio').textContent = '--';
+      document.getElementById('kpiTotalSavingsCaptured').textContent = '$0.00 Saved';
+
+      if (emptyPane) emptyPane.hidden = false;
+      document.querySelectorAll('.terminal-view-pane').forEach((pane) => {
+        pane.hidden = true;
+      });
+      return;
+    }
+
+    // Active receipts populated
+    if (emptyPane) emptyPane.hidden = true;
+    document.querySelectorAll('.terminal-view-pane').forEach((pane) => {
+      pane.hidden = pane.id !== state.currentView;
+    });
+
     const analytics = analyzeReceipts(state.receipts, state.priceMode);
     state.analytics = analytics;
 
     // Header badge
-    const dot = document.getElementById('statusDot');
-    const sourceText = document.getElementById('dataSourceText');
-    if (state.source === 'live') {
-      dot.className = 'status-indicator live';
-      sourceText.textContent = `${state.receipts.length} Live Receipts (Carlsbad)`;
-    } else {
-      dot.className = 'status-indicator';
-      sourceText.textContent = `Carlsbad Preview (${state.receipts.length} Receipts)`;
+    if (dot) dot.className = 'status-indicator live';
+    if (sourceText) sourceText.textContent = `${state.receipts.length} Active Receipts`;
+    if (ledgerTabCount) ledgerTabCount.textContent = `(${state.receipts.length} Receipts)`;
+
+    // Date Horizon & Warehouse Name
+    const dates = state.receipts
+      .map((r) => new Date(r.transactionDateTime || r.transactionDate).getTime())
+      .filter((t) => !Number.isNaN(t))
+      .sort((a, b) => a - b);
+    if (dates.length > 0 && navDateHorizon) {
+      const minD = new Date(dates[0]);
+      const maxD = new Date(dates[dates.length - 1]);
+      const spanY = Math.max((maxD - minD) / (1000 * 60 * 60 * 24 * 365.25), 0.1).toFixed(1);
+      navDateHorizon.innerHTML = `<strong>Date Horizon:</strong> ${formatDateShort(minD)} &ndash; ${formatDateShort(maxD)} (${spanY} yrs)`;
+    }
+    const whList = state.receipts.map((r) => r.warehouseName).filter(Boolean);
+    const primaryWh = whList[0] || 'Costco Warehouse';
+    if (navWarehouseName) {
+      navWarehouseName.innerHTML = `<strong>Warehouse:</strong> ${primaryWh}`;
     }
 
     // Executive KPI Strip
@@ -1033,48 +1094,39 @@
     el.textContent = msg;
   }
 
-  async function loadDataset(mode = 'live') {
+  async function loadDataset() {
     // 1. Try local Node server if running
     try {
-      const url = mode === 'demo' ? '/api/receipts?mode=demo' : '/api/receipts';
-      const res = await fetch(url);
+      const res = await fetch('/api/receipts');
       if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
         const data = await res.json();
-        state.source = data.source;
-        state.receipts = data.receipts;
-        renderTerminal();
-        return;
+        if (data.receipts && data.receipts.length > 0) {
+          state.source = data.source || 'live';
+          state.receipts = data.receipts;
+          renderTerminal();
+          return;
+        }
       }
     } catch (_) {}
 
-    // 2. Client-side static fallback for GitHub Pages
-    if (mode === 'live') {
-      const stored = localStorage.getItem('pinflation_user_receipts');
-      if (stored) {
-        try {
-          const parsed = JSON.parse(stored);
-          if (Array.isArray(parsed) && parsed.length > 0) {
-            state.source = 'live';
-            state.receipts = parsed;
-            renderTerminal();
-            return;
-          }
-        } catch (_) {}
-      }
+    // 2. Client-side static fallback for GitHub Pages (localStorage)
+    const stored = localStorage.getItem('pinflation_user_receipts');
+    if (stored) {
+      try {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          state.source = 'live';
+          state.receipts = parsed;
+          renderTerminal();
+          return;
+        }
+      } catch (_) {}
     }
 
-    // 3. Fallback to bundled sample_receipts.json
-    try {
-      const sampleRes = await fetch('sample_receipts.json');
-      if (sampleRes.ok) {
-        const sampleData = await sampleRes.json();
-        state.source = 'demo';
-        state.receipts = sampleData.receipts || sampleData;
-        renderTerminal();
-      }
-    } catch (e) {
-      console.warn('Could not load sample receipts:', e);
-    }
+    // 3. Start with zero data and direct user to Costco Connector
+    state.source = 'none';
+    state.receipts = [];
+    renderTerminal();
   }
 
   async function importJsonPayload(parsed) {
@@ -1151,15 +1203,75 @@
       copyConsoleScript(e.currentTarget);
     });
 
-    document.getElementById('loadLiveBtn')?.addEventListener('click', () => {
-      loadDataset('live');
-      showStatus('Switched to live synced Costco receipts.');
+    // Modal Tab 3: Export Backup & Clear Data
+    document.getElementById('exportBackupJsonBtn')?.addEventListener('click', () => {
+      if (!state.receipts || state.receipts.length === 0) {
+        showStatus('⚠️ No receipts to export yet. Please sync your account first.', true);
+        return;
+      }
+      const payload = {
+        exportedAt: new Date().toISOString(),
+        receiptCount: state.receipts.length,
+        receipts: state.receipts
+      };
+      const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `costco_receipts_${new Date().toISOString().slice(0, 10)}.json`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      showStatus(`✓ Exported backup with ${state.receipts.length} receipts.`, false);
     });
 
-    document.getElementById('loadDemoBtn')?.addEventListener('click', () => {
-      loadDataset('demo');
-      showStatus('Switched to reference demo dataset.');
+    document.getElementById('clearDataBtn')?.addEventListener('click', () => {
+      if (confirm('Clear all stored Costco receipts from browser storage?')) {
+        try {
+          localStorage.removeItem('pinflation_user_receipts');
+        } catch (_) {}
+        state.receipts = [];
+        state.source = 'none';
+        renderTerminal();
+        showStatus('✓ Cleared all receipts from browser storage.', false);
+      }
     });
+
+    // Empty state call-to-actions
+    const syncModal = document.getElementById('syncModal');
+    document.getElementById('emptyStateOpenSyncBtn')?.addEventListener('click', () => {
+      syncModal.showModal();
+    });
+
+    document.getElementById('emptyStateCopyScriptBtn')?.addEventListener('click', (e) => {
+      copyConsoleScript(e.currentTarget);
+    });
+
+    const emptyDropzone = document.getElementById('emptyDropzone');
+    if (emptyDropzone) {
+      emptyDropzone.addEventListener('dragover', (e) => {
+        e.preventDefault();
+        emptyDropzone.classList.add('dragover');
+      });
+      emptyDropzone.addEventListener('dragleave', () => emptyDropzone.classList.remove('dragover'));
+      emptyDropzone.addEventListener('drop', async (e) => {
+        e.preventDefault();
+        emptyDropzone.classList.remove('dragover');
+        const file = e.dataTransfer?.files?.[0];
+        if (file) {
+          try {
+            const text = await file.text();
+            await importJsonPayload(JSON.parse(text));
+          } catch (err) {
+            alert('Could not read JSON file: ' + err.message);
+          }
+        }
+      });
+      emptyDropzone.addEventListener('click', () => {
+        document.getElementById('jsonFileInput')?.click();
+      });
+    }
 
     document.getElementById('exportCsvBtn').addEventListener('click', exportSkuCsv);
 

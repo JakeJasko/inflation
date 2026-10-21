@@ -8,7 +8,6 @@ const ROOT_DIR = __dirname;
 const DATA_DIR = path.join(ROOT_DIR, 'data');
 const PUBLIC_DIR = path.join(ROOT_DIR, 'public');
 const LIVE_RECEIPTS_PATH = path.join(DATA_DIR, 'receipts.json');
-const SAMPLE_RECEIPTS_PATH = path.join(DATA_DIR, 'sample_receipts.json');
 const TOKENS_PATH = path.join(DATA_DIR, 'tokens.json');
 const EXPORT_SCRIPT_PATH = path.join(ROOT_DIR, 'scripts', 'export-costco-receipts.js');
 
@@ -123,15 +122,13 @@ function loadActiveReceipts(forceDemo = false) {
     } catch (_) {}
   }
 
-  const demo = JSON.parse(fs.readFileSync(SAMPLE_RECEIPTS_PATH, 'utf8'));
-  const receipts = extractReceiptsArray(demo);
   return {
-    source: 'demo',
-    exportedAt: demo.exportedAt || new Date().toISOString(),
-    hasLiveReceipts: fs.existsSync(LIVE_RECEIPTS_PATH),
+    source: 'none',
+    exportedAt: new Date().toISOString(),
+    hasLiveReceipts: false,
     hasStoredToken: fs.existsSync(TOKENS_PATH),
-    receiptCount: receipts.length,
-    receipts
+    receiptCount: 0,
+    receipts: []
   };
 }
 

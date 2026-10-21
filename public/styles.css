@@ -1277,6 +1277,199 @@ dialog::backdrop {
   color: var(--fin-crimson);
 }
 
+/* ==========================================================================
+   EMPTY STATE: AWAITING RECEIPT INGESTION
+   ========================================================================== */
+
+.empty-terminal-pane {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 3rem 1.5rem;
+  min-height: 520px;
+}
+
+.empty-terminal-card {
+  max-width: 820px;
+  width: 100%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-lg);
+  padding: 2.75rem 2.25rem;
+  text-align: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.empty-terminal-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  color: var(--costco-blue);
+  margin-bottom: 1.25rem;
+}
+[data-theme="dark"] .empty-terminal-icon {
+  color: var(--fin-cyan);
+}
+
+.empty-terminal-title {
+  margin: 0.85rem 0 0.5rem;
+  font-size: 1.625rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: var(--text-primary);
+}
+
+.empty-terminal-sub {
+  margin: 0 auto 1.85rem;
+  max-width: 620px;
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.empty-terminal-actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.85rem;
+  flex-wrap: wrap;
+  margin-bottom: 2.5rem;
+}
+
+.btn-lg {
+  padding: 0.65rem 1.35rem;
+  font-size: 0.875rem;
+  border-radius: var(--radius-md);
+}
+
+.empty-steps-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  text-align: left;
+  margin-bottom: 1.75rem;
+}
+
+.empty-step-box {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.15rem 1rem;
+  display: flex;
+  gap: 0.75rem;
+}
+
+.step-num {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: var(--costco-blue);
+  color: #ffffff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  font-family: var(--font-mono);
+}
+[data-theme="dark"] .step-num {
+  background: var(--fin-cyan);
+  color: #080c14;
+}
+
+.step-content strong {
+  display: block;
+  font-size: 0.84rem;
+  color: var(--text-primary);
+  margin-bottom: 0.25rem;
+}
+
+.step-content p {
+  margin: 0;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+}
+
+.step-content code {
+  font-family: var(--font-mono);
+  font-size: 0.8125rem;
+  padding: 0.1rem 0.3rem;
+  border-radius: 3px;
+  background: var(--bg-app);
+  color: var(--text-primary);
+}
+
+.empty-dropzone {
+  border: 2px dashed var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 1.25rem;
+  background: var(--bg-surface-elevated);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.empty-dropzone:hover,
+.empty-dropzone.dragover {
+  border-color: var(--costco-blue);
+  background: var(--bg-surface-hover);
+}
+.empty-dropzone p {
+  margin: 0;
+  font-size: 0.84rem;
+  color: var(--text-muted);
+}
+.empty-dropzone strong {
+  color: var(--text-primary);
+}
+
+.manage-info-box {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  margin-bottom: 1rem;
+}
+
+.manage-info-label {
+  font-size: 0.8125rem;
+  color: var(--text-secondary);
+}
+
+.manage-info-count {
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.btn-terminal-danger {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.85rem;
+  font-size: 0.8125rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  background: transparent;
+  color: var(--fin-crimson);
+  border: 1px solid var(--fin-crimson);
+  transition: all 0.15s ease;
+}
+.btn-terminal-danger:hover {
+  background: var(--fin-crimson);
+  color: #ffffff;
+}
+
 /* Responsive */
 @media (max-width: 1200px) {
   .split-workspace {
@@ -1301,6 +1494,9 @@ dialog::backdrop {
     grid-template-columns: 1fr;
   }
   .scenario-body {
+    grid-template-columns: 1fr;
+  }
+  .empty-steps-grid {
     grid-template-columns: 1fr;
   }
 }

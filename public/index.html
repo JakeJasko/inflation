@@ -39,8 +39,8 @@
 
       <div class="header-control-strip">
         <div class="dataset-status-box" id="datasetStatusPill" title="Active Receipt Repository">
-          <span class="status-indicator live" id="statusDot"></span>
-          <span class="status-label" id="dataSourceText">76 Live Receipts Active</span>
+          <span class="status-indicator" id="statusDot"></span>
+          <span class="status-label" id="dataSourceText">No Receipts Connected</span>
         </div>
 
         <div class="theme-toggle-wrap">
@@ -99,11 +99,11 @@
       <div class="kpi-metric-cell key-exposure">
         <div class="metric-head">
           <span class="metric-caption">PERSONAL CPI (YO-Y)</span>
-          <span class="metric-tag tag-crimson" id="kpiBasisTag">Shelf Basis</span>
+          <span class="metric-tag tag-neutral" id="kpiBasisTag">Shelf Basis</span>
         </div>
         <div class="metric-body">
-          <span class="metric-primary-val" id="kpiAnnualizedInflation">--%</span>
-          <span class="metric-secondary-badge badge-up" id="kpiCumulativeInflation">--% cumulative</span>
+          <span class="metric-primary-val" id="kpiAnnualizedInflation">--</span>
+          <span class="metric-secondary-badge badge-neutral" id="kpiCumulativeInflation">-- cumulative</span>
         </div>
         <p class="metric-foot">Laspeyres quantity-weighted repeat staple basket</p>
       </div>
@@ -111,10 +111,10 @@
       <div class="kpi-metric-cell">
         <div class="metric-head">
           <span class="metric-caption">PERSONAL CPI INDEX vs. US BLS</span>
-          <span class="metric-tag tag-neutral">Oct 2023 = 100.0</span>
+          <span class="metric-tag tag-neutral" id="kpiBenchmarkDate">Base 100.0</span>
         </div>
         <div class="metric-body">
-          <span class="metric-primary-val" id="kpiPersonalCpiIndex">100.0</span>
+          <span class="metric-primary-val" id="kpiPersonalCpiIndex">--</span>
           <span class="metric-secondary-badge badge-neutral" id="kpiCpiSpread">-- vs. BLS CPI-U</span>
         </div>
         <p class="metric-foot">Benchmark: US BLS Food-at-Home (2.9% annualized)</p>
@@ -123,11 +123,11 @@
       <div class="kpi-metric-cell">
         <div class="metric-head">
           <span class="metric-caption">ANNUAL CAPITAL DRAG</span>
-          <span class="metric-tag tag-amber" id="kpiBasketCountPill">0 Repeat SKUs</span>
+          <span class="metric-tag tag-neutral" id="kpiBasketCountPill">0 Repeat SKUs</span>
         </div>
         <div class="metric-body">
-          <span class="metric-primary-val" id="kpiExtraSpend">+$0.00</span>
-          <span class="metric-secondary-badge badge-neutral" id="kpiBasketTotals">$0 &rarr; $0</span>
+          <span class="metric-primary-val" id="kpiExtraSpend">--</span>
+          <span class="metric-secondary-badge badge-neutral" id="kpiBasketTotals">$0.00 &rarr; $0.00</span>
         </div>
         <p class="metric-foot">Projected annual dollar increase on repeat grocery basket</p>
       </div>
@@ -135,11 +135,11 @@
       <div class="kpi-metric-cell">
         <div class="metric-head">
           <span class="metric-caption">SAVINGS SHIELD RATIO</span>
-          <span class="metric-tag tag-emerald">INSTANT PROMOTIONS</span>
+          <span class="metric-tag tag-neutral">INSTANT PROMOTIONS</span>
         </div>
         <div class="metric-body">
-          <span class="metric-primary-val text-emerald" id="kpiShieldRatio">--%</span>
-          <span class="metric-secondary-badge badge-down" id="kpiTotalSavingsCaptured">$0.00 Saved</span>
+          <span class="metric-primary-val text-emerald" id="kpiShieldRatio">--</span>
+          <span class="metric-secondary-badge badge-neutral" id="kpiTotalSavingsCaptured">$0.00 Saved</span>
         </div>
         <p class="metric-foot" id="kpiShieldSubtext">Share of gross price inflation absorbed by Costco discounts</p>
       </div>
@@ -156,23 +156,88 @@
         <button type="button" class="nav-tab-btn" data-view="view-macro" role="tab" aria-selected="false">
           Macro CPI Trajectory &amp; Projections
         </button>
-        <button type="button" class="nav-tab-btn" data-view="view-ledger" role="tab" aria-selected="false">
-          Warehouse Transaction Ledger (76 Receipts)
+        <button type="button" class="nav-tab-btn" data-view="view-ledger" role="tab" aria-selected="false" id="tabLedgerBtn">
+          Warehouse Transaction Ledger <span id="ledgerTabCount">(0 Receipts)</span>
         </button>
       </div>
 
       <div class="nav-right-summary">
-        <span class="summary-item"><strong>Date Horizon:</strong> Oct 2023 &ndash; Oct 2026 (3.0 yrs)</span>
+        <span class="summary-item" id="navDateHorizon"><strong>Date Horizon:</strong> Awaiting data</span>
         <span class="summary-divider" aria-hidden="true">&bull;</span>
-        <span class="summary-item"><strong>Warehouse:</strong> #462 Carlsbad, CA</span>
+        <span class="summary-item" id="navWarehouseName"><strong>Warehouse:</strong> Connect account</span>
       </div>
     </div>
   </nav>
 
   <!-- Main Terminal Body -->
   <main class="terminal-workspace">
+    <!-- Dedicated Empty State Pane (Displayed when 0 receipts are loaded) -->
+    <div class="empty-terminal-pane" id="emptyTerminalPane">
+      <div class="empty-terminal-card">
+        <div class="empty-terminal-icon" aria-hidden="true">
+          <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <polyline points="14 2 14 8 20 8"></polyline>
+            <line x1="16" y1="13" x2="8" y2="13"></line>
+            <line x1="16" y1="17" x2="8" y2="17"></line>
+            <polyline points="10 9 9 9 8 9"></polyline>
+          </svg>
+        </div>
+        <span class="institutional-badge">AWAITING RECEIPT INGESTION</span>
+        <h2 class="empty-terminal-title">Connect Your Costco Account</h2>
+        <p class="empty-terminal-sub">
+          Import your Costco warehouse receipts to calculate your personalized Consumer Price Index (CPI), track SKU-level price changes over time, and quantify your annual grocery capital drag.
+        </p>
+        <div class="empty-terminal-actions">
+          <button type="button" class="btn-terminal-primary btn-lg" id="emptyStateOpenSyncBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+            </svg>
+            Open Costco Connector
+          </button>
+          <button type="button" class="btn-terminal-secondary btn-lg" id="emptyStateCopyScriptBtn">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+              <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+            </svg>
+            Copy 10-Second Console Script
+          </button>
+        </div>
+
+        <div class="empty-steps-grid">
+          <div class="empty-step-box">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Open Costco.com Tab</strong>
+              <p>Log in and navigate to <em>Orders &amp; Purchases &rarr; Warehouse</em> in your browser.</p>
+            </div>
+          </div>
+          <div class="empty-step-box">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Connect in 1 Click</strong>
+              <p>Paste your <code>idToken</code> in the connector or run the 10-second export script in console.</p>
+            </div>
+          </div>
+          <div class="empty-step-box">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>100% Client-Side Privacy</strong>
+              <p>Your receipts calculate locally in your browser memory. No credentials or data are sent to external servers.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="empty-dropzone" id="emptyDropzone">
+          <p>Or drag and drop your existing <strong>costco_receipts.json</strong> export directly here</p>
+        </div>
+      </div>
+    </div>
+
     <!-- View 1: SKU Inflation Attribution Matrix (Default Financial View) -->
-    <div class="terminal-view-pane active" id="view-attribution">
+    <div class="terminal-view-pane" id="view-attribution" hidden>
       <div class="split-workspace">
         <!-- SKU Table & Filters -->
         <section class="workspace-main-panel">
@@ -376,7 +441,7 @@
           2. Browser Console Script
         </button>
         <button type="button" class="modal-tab" data-tab="tab-manage" role="tab" aria-selected="false">
-          3. Dataset Switcher
+          3. Manage Data &amp; Backup
         </button>
       </div>
 
@@ -460,14 +525,31 @@
         </details>
       </div>
 
-      <!-- Tab 3: Dataset Switcher -->
+      <!-- Tab 3: Repository & Backup Management -->
       <div class="modal-tab-pane" id="tab-manage" role="tabpanel" hidden>
         <p class="modal-desc">
-          Toggle between your authentic synced Costco account repository and the reference Carlsbad demo dataset.
+          Manage your local receipt repository. You can export a full backup of all synced receipts or reset stored data to start fresh.
         </p>
+        <div class="manage-info-box">
+          <span class="manage-info-label">Active Stored Receipts:</span>
+          <span class="manage-info-count" id="activeReceiptsCountLabel">0 Receipts</span>
+        </div>
         <div class="manage-actions-box">
-          <button type="button" class="btn-terminal-secondary" id="loadLiveBtn">Use Live Synced Account (76 Receipts)</button>
-          <button type="button" class="btn-terminal-secondary" id="loadDemoBtn">Use Reference Demo Dataset (8 Receipts)</button>
+          <button type="button" class="btn-terminal-secondary" id="exportBackupJsonBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            Export Backup costco_receipts.json
+          </button>
+          <button type="button" class="btn-terminal-danger" id="clearDataBtn">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <polyline points="3 6 5 6 21 6"></polyline>
+              <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+            </svg>
+            Clear Stored Receipts
+          </button>
         </div>
       </div>
 
