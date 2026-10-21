@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pinflation Terminal — Personal Costco Inflation &amp; Capital Planning</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Executive Financial Header -->
+  <header class="terminal-header">
+    <div class="terminal-header-inner">
+      <div class="header-brand-group">
+        <div class="brand-monogram" aria-hidden="true">PI</div>
+        <div>
+          <div class="brand-title-wrap">
+            <h1 class="brand-title">PINFLATION TERMINAL</h1>
+            <span class="institutional-badge">INSTITUTIONAL GRADE</span>
+            <span class="costco-badge">COSTCO #462 CARLSBAD</span>
+          </div>
+          <p class="brand-sub">Personalized Consumer Price Index, SKU Inflation Attribution &amp; Capital Drag Analytics</p>
+        </div>
+      </div>
+
+      <div class="header-control-strip">
+        <div class="dataset-status-box" id="datasetStatusPill" title="Active Receipt Repository">
+          <span class="status-indicator live" id="statusDot"></span>
+          <span class="status-label" id="dataSourceText">76 Live Receipts Active</span>
+        </div>
+
+        <div class="theme-toggle-wrap">
+          <button type="button" class="btn-theme" id="themeToggleBtn" aria-label="Toggle Light/Dark Financial Theme" title="Toggle Light/Dark Financial Theme">
+            <span class="theme-label" id="themeLabelText">Dark Terminal</span>
+          </button>
+        </div>
+
+        <div class="segmented-basis" role="group" aria-label="Pricing Basis Methodology">
+          <button type="button" class="basis-btn active" data-price-mode="list" id="modeListBtn" title="Shelf List Price (ignores manufacturer instant rebate volatility to track true product inflation)">
+            Shelf List Basis
+          </button>
+          <button type="button" class="basis-btn" data-price-mode="net" id="modeNetBtn" title="Net Paid Basis (reflects actual cash outflow after Costco Instant Savings coupons)">
+            Net Out-of-Pocket
+          </button>
+        </div>
+
+        <button type="button" class="btn-terminal-secondary" id="exportCsvBtn" title="Export SKU Inflation Table to CSV">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+            <polyline points="7 10 12 15 17 10"></polyline>
+            <line x1="12" y1="15" x2="12" y2="3"></line>
+          </svg>
+          Export CSV
+        </button>
+
+        <button type="button" class="btn-terminal-primary" id="openSyncModalBtn">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
+            <polyline points="17 8 12 3 7 8" />
+            <line x1="12" y1="18" x2="12" y2="12" />
+          </svg>
+          Costco Connector
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Executive Financial KPI Strip -->
+  <section class="kpi-strip" aria-label="Executive Financial Exposure Metrics">
+    <div class="kpi-strip-inner">
+      <div class="kpi-metric-cell key-exposure">
+        <div class="metric-head">
+          <span class="metric-caption">PERSONAL CPI (YO-Y)</span>
+          <span class="metric-tag tag-crimson" id="kpiBasisTag">Shelf Basis</span>
+        </div>
+        <div class="metric-body">
+          <span class="metric-primary-val" id="kpiAnnualizedInflation">--%</span>
+          <span class="metric-secondary-badge badge-up" id="kpiCumulativeInflation">--% cumulative</span>
+        </div>
+        <p class="metric-foot">Laspeyres quantity-weighted repeat staple basket</p>
+      </div>
+
+      <div class="kpi-metric-cell">
+        <div class="metric-head">
+          <span class="metric-caption">PERSONAL CPI INDEX vs. US BLS</span>
+          <span class="metric-tag tag-neutral">Oct 2023 = 100.0</span>
+        </div>
+        <div class="metric-body">
+          <span class="metric-primary-val" id="kpiPersonalCpiIndex">100.0</span>
+          <span class="metric-secondary-badge badge-neutral" id="kpiCpiSpread">-- vs. BLS CPI-U</span>
+        </div>
+        <p class="metric-foot">Benchmark: US BLS Food-at-Home (2.9% annualized)</p>
+      </div>
+
+      <div class="kpi-metric-cell">
+        <div class="metric-head">
+          <span class="metric-caption">ANNUAL CAPITAL DRAG</span>
+          <span class="metric-tag tag-amber" id="kpiBasketCountPill">0 Repeat SKUs</span>
+        </div>
+        <div class="metric-body">
+          <span class="metric-primary-val" id="kpiExtraSpend">+$0.00</span>
+          <span class="metric-secondary-badge badge-neutral" id="kpiBasketTotals">$0 &rarr; $0</span>
+        </div>
+        <p class="metric-foot">Projected annual dollar increase on repeat grocery basket</p>
+      </div>
+
+      <div class="kpi-metric-cell">
+        <div class="metric-head">
+          <span class="metric-caption">SAVINGS SHIELD RATIO</span>
+          <span class="metric-tag tag-emerald">INSTANT PROMOTIONS</span>
+        </div>
+        <div class="metric-body">
+          <span class="metric-primary-val text-emerald" id="kpiShieldRatio">--%</span>
+          <span class="metric-secondary-badge badge-down" id="kpiTotalSavingsCaptured">$0.00 Saved</span>
+        </div>
+        <p class="metric-foot" id="kpiShieldSubtext">Share of gross price inflation absorbed by Costco discounts</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Financial Navigation Sub-Bar -->
+  <nav class="terminal-nav" aria-label="Terminal Viewports">
+    <div class="terminal-nav-inner">
+      <div class="nav-tabs-group" role="tablist">
+        <button type="button" class="nav-tab-btn active" data-view="view-attribution" role="tab" aria-selected="true">
+          SKU Inflation Attribution Matrix
+        </button>
+        <button type="button" class="nav-tab-btn" data-view="view-macro" role="tab" aria-selected="false">
+          Macro CPI Trajectory &amp; Projections
+        </button>
+        <button type="button" class="nav-tab-btn" data-view="view-ledger" role="tab" aria-selected="false">
+          Warehouse Transaction Ledger (76 Receipts)
+        </button>
+      </div>
+
+      <div class="nav-right-summary">
+        <span class="summary-item"><strong>Date Horizon:</strong> Oct 2023 &ndash; Oct 2026 (3.0 yrs)</span>
+        <span class="summary-divider" aria-hidden="true">&bull;</span>
+        <span class="summary-item"><strong>Warehouse:</strong> #462 Carlsbad, CA</span>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Main Terminal Body -->
+  <main class="terminal-workspace">
+    <!-- View 1: SKU Inflation Attribution Matrix (Default Financial View) -->
+    <div class="terminal-view-pane active" id="view-attribution">
+      <div class="split-workspace">
+        <!-- SKU Table & Filters -->
+        <section class="workspace-main-panel">
+          <div class="panel-action-bar">
+            <div class="search-box">
+              <input
+                type="search"
+                id="itemSearchInput"
+                placeholder="Search SKU # (e.g. 1068080), description, or department..."
+                aria-label="Filter SKU Portfolio"
+              />
+            </div>
+            <div class="filter-controls">
+              <select id="deptFilterSelect" aria-label="Filter by Warehouse Department">
+                <option value="all">All Departments (100% Portfolio)</option>
+              </select>
+              <select id="sortFilterSelect" aria-label="Sort Order">
+                <option value="spend_desc">Highest Portfolio Spend ($)</option>
+                <option value="pct_desc">Highest Inflation Rate (%)</option>
+                <option value="abs_desc">Highest Dollar Jump ($)</option>
+                <option value="pct_asc">Deflation / Price Drops (%)</option>
+                <option value="count_desc">Most Frequently Purchased</option>
+              </select>
+              <label class="toggle-pill">
+                <input type="checkbox" id="repeatOnlyCheckbox" checked />
+                <span>Repeat SKUs Only (&ge;2)</span>
+              </label>
+            </div>
+          </div>
+
+          <div class="table-container">
+            <table class="terminal-table" role="table" aria-label="SKU Inflation Attribution Table">
+              <thead>
+                <tr>
+                  <th scope="col">Costco SKU</th>
+                  <th scope="col">Product Description</th>
+                  <th scope="col">Dept</th>
+                  <th scope="col" class="num-col">Spend Weight</th>
+                  <th scope="col" class="num-col">Orders</th>
+                  <th scope="col" class="num-col">Base Price</th>
+                  <th scope="col" class="num-col">Latest Price</th>
+                  <th scope="col">Price Trajectory</th>
+                  <th scope="col" class="num-col">Dollar Drag</th>
+                  <th scope="col" class="num-col">Inflation</th>
+                </tr>
+              </thead>
+              <tbody id="skuTableBody"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <!-- Dedicated SKU Financial Dossier (Fixed Right Rail) -->
+        <aside class="workspace-rail-panel" id="itemInspectorPanel" aria-label="SKU Financial Dossier">
+          <div class="rail-header">
+            <div>
+              <span class="dossier-sku" id="inspectorSku">SKU #------</span>
+              <h2 class="dossier-title" id="inspectorTitle">Select an Asset</h2>
+              <p class="dossier-sub" id="inspectorSubtitle">Click any SKU row to inspect price trajectory and promo lines</p>
+            </div>
+            <div class="dossier-inflation-badge" id="inspectorDeltaBadge">--%</div>
+          </div>
+
+          <div class="dossier-stats-grid">
+            <div class="dossier-stat-card">
+              <span class="dossier-stat-label">Initial Baseline</span>
+              <span class="dossier-stat-val" id="inspFirstPrice">--</span>
+              <span class="dossier-stat-sub" id="inspFirstDate">--</span>
+            </div>
+            <div class="dossier-stat-card">
+              <span class="dossier-stat-label">Latest Quoted</span>
+              <span class="dossier-stat-val" id="inspLatestPrice">--</span>
+              <span class="dossier-stat-sub" id="inspLatestDate">--</span>
+            </div>
+            <div class="dossier-stat-card">
+              <span class="dossier-stat-label">Annualized CAGR</span>
+              <span class="dossier-stat-val" id="inspAnnualized">--</span>
+              <span class="dossier-stat-sub" id="inspTotalUnits">-- units bought</span>
+            </div>
+          </div>
+
+          <div class="dossier-chart-container" role="region" aria-label="SKU Unit Price History Chart">
+            <div class="dossier-chart-legend">
+              <span class="legend-swatch-list"></span> Shelf List Price
+              <span class="legend-swatch-net ml-2"></span> Net Paid Price
+            </div>
+            <canvas id="itemDetailCanvas" height="170"></canvas>
+          </div>
+
+          <div class="dossier-history-section">
+            <div class="dossier-history-head">
+              <h3>Transaction &amp; Coupon Audit</h3>
+              <span id="inspectorHistoryCount">0 transactions</span>
+            </div>
+            <div class="dossier-history-list" id="inspectorHistoryList"></div>
+          </div>
+        </aside>
+      </div>
+    </div>
+
+    <!-- View 2: Macro CPI Trajectory & Projections -->
+    <div class="terminal-view-pane" id="view-macro" hidden>
+      <div class="macro-grid">
+        <section class="macro-chart-panel">
+          <div class="macro-panel-header">
+            <div>
+              <h2 class="macro-title">Personal CPI Trajectory vs. US BLS Food-at-Home Index</h2>
+              <p class="macro-sub">Baseline normalized to 100.0 at earliest recorded transaction (Oct 2023)</p>
+            </div>
+            <div class="macro-legend">
+              <span class="macro-legend-item"><i class="swatch-crimson"></i>Personal CPI (Shelf List)</span>
+              <span class="macro-legend-item"><i class="swatch-amber"></i>Personal CPI (Net Paid)</span>
+              <span class="macro-legend-item"><i class="swatch-cyan"></i>US BLS Food-at-Home CPI (2.9%/yr)</span>
+            </div>
+          </div>
+          <div class="macro-canvas-wrap">
+            <canvas id="cpiChartCanvas" height="320"></canvas>
+            <div id="cpiChartTooltip" class="terminal-tooltip" hidden></div>
+          </div>
+        </section>
+
+        <section class="macro-dept-panel">
+          <div class="macro-panel-header">
+            <div>
+              <h2 class="macro-title">Inflation by Warehouse Department</h2>
+              <p class="macro-sub">Expenditure-weighted price shift across categories</p>
+            </div>
+          </div>
+          <div id="deptBreakdownList" class="dept-progress-list"></div>
+        </section>
+      </div>
+
+      <!-- Forward Scenario Planner -->
+      <section class="scenario-panel">
+        <div class="scenario-header">
+          <div>
+            <h2 class="macro-title">Forward 12-Month Grocery Capital Projection</h2>
+            <p class="macro-sub">Estimated forward annual budget requirement based on your 3-year historical personal CPI slope</p>
+          </div>
+        </div>
+        <div class="scenario-body" id="scenarioPlannerBody">
+          <div class="scenario-metric-box">
+            <span class="scenario-label">Historical 3-Yr Baseline Spend</span>
+            <span class="scenario-val" id="scenBaseSpend">$0.00</span>
+          </div>
+          <div class="scenario-metric-box">
+            <span class="scenario-label">Forward 12-Mo Projected Budget</span>
+            <span class="scenario-val text-amber" id="scenProjectedSpend">$0.00</span>
+          </div>
+          <div class="scenario-metric-box">
+            <span class="scenario-label">Projected Inflation Premium</span>
+            <span class="scenario-val text-crimson" id="scenDeltaSpend">+$0.00</span>
+          </div>
+          <div class="scenario-metric-box">
+            <span class="scenario-label">Projected Promo Buffer (Instant Savings)</span>
+            <span class="scenario-val text-emerald" id="scenSavingsBuffer">-$0.00</span>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- View 3: Warehouse Transaction Ledger (Full 76 Receipts) -->
+    <div class="terminal-view-pane" id="view-ledger" hidden>
+      <section class="ledger-panel">
+        <div class="ledger-header">
+          <div>
+            <h2 class="macro-title">Warehouse Transaction Audit Ledger</h2>
+            <p class="macro-sub">Full cryptographic point-of-sale receipt register with line item barcodes, discounts, and tax splits</p>
+          </div>
+          <div class="ledger-filter">
+            <input
+              type="search"
+              id="receiptSearchInput"
+              placeholder="Filter by barcode, date, item, or amount..."
+              aria-label="Filter transaction ledger"
+            />
+          </div>
+        </div>
+        <div class="ledger-cards-grid" id="receiptsGrid"></div>
+      </section>
+    </div>
+  </main>
+
+  <!-- Modern Native Modal Dialog with closedby="any" per modern-web-guidance -->
+  <dialog id="syncModal" closedby="any" aria-labelledby="syncModalTitle">
+    <div class="modal-content">
+      <div class="modal-header">
+        <div>
+          <span class="costco-badge">COSTCO GRAPHQL REPOSITORY</span>
+          <h2 id="syncModalTitle" class="modal-title">Costco Warehouse Data Connector</h2>
+        </div>
+        <form method="dialog">
+          <button type="submit" class="icon-close-btn" aria-label="Close modal">&times;</button>
+        </form>
+      </div>
+
+      <div class="modal-tabs" role="tablist">
+        <button type="button" class="modal-tab active" data-tab="tab-token" role="tab" aria-selected="true">
+          1. Direct Token API Sync
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-console" role="tab" aria-selected="false">
+          2. Browser Console Script
+        </button>
+        <button type="button" class="modal-tab" data-tab="tab-manage" role="tab" aria-selected="false">
+          3. Dataset Switcher
+        </button>
+      </div>
+
+      <!-- Tab 1: Token API Sync -->
+      <div class="modal-tab-pane active" id="tab-token" role="tabpanel">
+        <p class="modal-desc">
+          Fetch updated receipts directly from <code>https://ecom-api.costco.com/ebusiness/order/v1/orders/graphql</code>.
+          Run <code>copy(localStorage.getItem('idToken'))</code> in your Costco browser console and paste the token below.
+        </p>
+
+        <div class="form-group">
+          <label for="costcoIdTokenInput">Costco Bearer <code>idToken</code> (JWT)</label>
+          <textarea
+            id="costcoIdTokenInput"
+            rows="3"
+            placeholder="eyJhbGciOiJSUzI1NiIsImtpZCI6... (paste fresh token from Costco console)"
+          ></textarea>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="costcoRefreshTokenInput">Optional <code>refresh_token</code> (for 90-day auto-refresh)</label>
+            <input type="password" id="costcoRefreshTokenInput" placeholder="Optional OAuth2 refresh token" />
+          </div>
+          <div class="form-group">
+            <label for="costcoYearsBackSelect">History Window</label>
+            <select id="costcoYearsBackSelect">
+              <option value="1">Last 1 Year</option>
+              <option value="2">Last 2 Years</option>
+              <option value="3" selected>Last 3 Years</option>
+              <option value="5">Last 5 Years</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-terminal-primary" id="runTokenSyncBtn">
+            Sync from Costco GraphQL API
+          </button>
+        </div>
+      </div>
+
+      <!-- Tab 2: Console Script & File Drop -->
+      <div class="modal-tab-pane" id="tab-console" role="tabpanel" hidden>
+        <ol class="steps-list">
+          <li>
+            On your open <strong>Costco.com &rarr; Orders &amp; Purchases &rarr; Warehouse</strong> tab, press
+            <kbd>F12</kbd> and switch to <strong>Console</strong>.
+          </li>
+          <li>
+            Click <strong>Copy Export Script</strong>, paste into console, and press <kbd>Enter</kbd>. It queries Costco's GraphQL API and downloads <code>costco_receipts.json</code>.
+          </li>
+          <li>
+            Drop <code>costco_receipts.json</code> below.
+          </li>
+        </ol>
+
+        <div class="script-box-header">
+          <span><code>scripts/export-costco-receipts.js</code></span>
+          <button type="button" class="btn-terminal-secondary btn-sm" id="copyScriptModalBtn">Copy Export Script</button>
+        </div>
+        <pre class="script-preview" id="scriptPreviewCode">Loading export script...</pre>
+
+        <div class="dropzone" id="jsonDropzone">
+          <input type="file" id="jsonFileInput" accept=".json,application/json" hidden />
+          <div class="dropzone-inner">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
+              <line x1="12" y1="18" x2="12" y2="12" />
+            </svg>
+            <p><strong>Drop <code>costco_receipts.json</code> here</strong> or <button type="button" class="link-btn" id="browseFileBtn">browse filesystem</button></p>
+            <span class="dropzone-hint">Accepts standard Costco export JSON payloads</span>
+          </div>
+        </div>
+
+        <details class="paste-json-details">
+          <summary>Or paste raw JSON</summary>
+          <textarea id="rawJsonTextarea" rows="4" placeholder='Paste [{"warehouseName": "CARLSBAD", "itemArray": [...]}] here...'></textarea>
+          <button type="button" class="btn-terminal-primary btn-sm" id="importPastedJsonBtn">Import Pasted JSON</button>
+        </details>
+      </div>
+
+      <!-- Tab 3: Dataset Switcher -->
+      <div class="modal-tab-pane" id="tab-manage" role="tabpanel" hidden>
+        <p class="modal-desc">
+          Toggle between your authentic synced Costco account repository and the reference Carlsbad demo dataset.
+        </p>
+        <div class="manage-actions-box">
+          <button type="button" class="btn-terminal-secondary" id="loadLiveBtn">Use Live Synced Account (76 Receipts)</button>
+          <button type="button" class="btn-terminal-secondary" id="loadDemoBtn">Use Reference Demo Dataset (8 Receipts)</button>
+        </div>
+      </div>
+
+      <div id="syncStatusMessage" class="sync-status-msg" hidden></div>
+    </div>
+  </dialog>
+
+  <script src="app.js"></script>
+</body>
+</html>

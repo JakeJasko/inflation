@@ -1,0 +1,25 @@
+# Dependencies
+node_modules/
+package-lock.json
+
+# Personal & Live Costco Data (CRITICAL - DO NOT COMMIT)
+data/receipts.json
+data/tokens.json
+costco_receipts*.json
+costco-*.json
+*.token
+*.pem
+*.key
+.env
+.env.*
+
+# Local AI Harness & Impeccable binary caches
+.agent/
+.cursor/
+.gemini/
+.impeccable/
+*.log
+
+# OS artifacts
+.DS_Store
+Thumbs.db

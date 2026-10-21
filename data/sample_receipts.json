@@ -1,0 +1,972 @@
+{
+  "source": "demo",
+  "exportedAt": "2026-10-20T17:10:00.000Z",
+  "receipts": [
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2026-10-05T19:10:00",
+      "transactionDate": "2026-10-05",
+      "transactionBarcode": "2046200401882610051910",
+      "transactionNumber": 188,
+      "registerNumber": 4,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 105.72,
+      "taxes": 2.28,
+      "total": 108.00,
+      "instantSavings": 4.50,
+      "totalItemCount": 7,
+      "itemArray": [
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 9.49,
+          "itemUnitPriceAmount": 9.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "772195",
+          "itemDescription01": "KS PARMIGIANO",
+          "itemDescription02": "AGED 24 MOS WEDGE",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 22.89,
+          "itemUnitPriceAmount": 22.89,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1272982",
+          "itemDescription01": "ORG AVOCADOS",
+          "itemDescription02": "6 CT BAG HASS",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 8.99,
+          "itemUnitPriceAmount": 8.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 26.99,
+          "itemUnitPriceAmount": 26.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1482910",
+          "itemDescription01": "RAOS MARINARA",
+          "itemDescription02": "2PK 28OZ JAR",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 13.49,
+          "itemUnitPriceAmount": 13.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "399901",
+          "itemDescription01": "/1482910",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 13,
+          "unit": -1,
+          "amount": -3.00,
+          "itemUnitPriceAmount": 3.00,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "47772",
+          "itemDescription01": "ROTISSERIE",
+          "itemDescription02": "KIRKLAND CHICKEN",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 4.99,
+          "itemUnitPriceAmount": 4.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "988812",
+          "itemDescription01": "KS BATH TISS",
+          "itemDescription02": "30 ROLLS 2-PLY",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 23.38,
+          "itemUnitPriceAmount": 23.38,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "399902",
+          "itemDescription01": "/988812",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 14,
+          "unit": -1,
+          "amount": -1.50,
+          "itemUnitPriceAmount": 1.50,
+          "taxFlag": "Y"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2026-09-20T17:41:00",
+      "transactionDate": "2026-09-20",
+      "transactionBarcode": "2046200902412609201741",
+      "transactionNumber": 241,
+      "registerNumber": 9,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 427.49,
+      "taxes": 12.58,
+      "total": 440.07,
+      "instantSavings": 11.00,
+      "totalItemCount": 12,
+      "itemArray": [
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 2,
+          "amount": 119.98,
+          "itemUnitPriceAmount": 59.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "889120",
+          "itemDescription01": "ATL SALMON",
+          "itemDescription02": "FARMED FILLET",
+          "itemDepartmentNumber": 61,
+          "unit": 2,
+          "amount": 67.98,
+          "itemUnitPriceAmount": 33.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 2,
+          "amount": 49.98,
+          "itemUnitPriceAmount": 24.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "119982",
+          "itemDescription01": "KS PAPER TWL",
+          "itemDescription02": "12 BIG ROLLS",
+          "itemDepartmentNumber": 14,
+          "unit": 2,
+          "amount": 43.98,
+          "itemUnitPriceAmount": 21.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 2,
+          "amount": 75.98,
+          "itemUnitPriceAmount": 37.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "587321",
+          "itemDescription01": "KS GRASS BTR",
+          "itemDescription02": "NZ SALTED 4X8OZ",
+          "itemDepartmentNumber": 65,
+          "unit": 2,
+          "amount": 25.98,
+          "itemUnitPriceAmount": 12.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "654399",
+          "itemDescription01": "CASCADE PLAT",
+          "itemDescription02": "92CT ACTIONPACS",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 26.99,
+          "itemUnitPriceAmount": 26.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "399903",
+          "itemDescription01": "/654399",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 14,
+          "unit": -1,
+          "amount": -5.00,
+          "itemUnitPriceAmount": 5.00,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "741852",
+          "itemDescription01": "ORG BERRIES",
+          "itemDescription02": "18OZ BLUEBERRIES",
+          "itemDepartmentNumber": 62,
+          "unit": 2,
+          "amount": 17.98,
+          "itemUnitPriceAmount": 8.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 9.64,
+          "itemUnitPriceAmount": 9.64,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "399904",
+          "itemDescription01": "/1334510",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 13,
+          "unit": -1,
+          "amount": -6.00,
+          "itemUnitPriceAmount": 6.00,
+          "taxFlag": "N"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2026-09-09T17:06:00",
+      "transactionDate": "2026-09-09",
+      "transactionBarcode": "2046200201142609091706",
+      "transactionNumber": 114,
+      "registerNumber": 2,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 14.23,
+      "taxes": 0.00,
+      "total": 14.23,
+      "instantSavings": 0.00,
+      "totalItemCount": 2,
+      "itemArray": [
+        {
+          "itemNumber": "47772",
+          "itemDescription01": "ROTISSERIE",
+          "itemDescription02": "KIRKLAND CHICKEN",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 4.99,
+          "itemUnitPriceAmount": 4.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 9.24,
+          "itemUnitPriceAmount": 9.24,
+          "taxFlag": "N"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2026-09-05T13:59:00",
+      "transactionDate": "2026-09-05",
+      "transactionBarcode": "2046200603012609051359",
+      "transactionNumber": 301,
+      "registerNumber": 6,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 176.89,
+      "taxes": 3.41,
+      "total": 180.30,
+      "instantSavings": 3.00,
+      "totalItemCount": 8,
+      "itemArray": [
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 26.49,
+          "itemUnitPriceAmount": 26.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 23.99,
+          "itemUnitPriceAmount": 23.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 57.99,
+          "itemUnitPriceAmount": 57.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 36.99,
+          "itemUnitPriceAmount": 36.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "988812",
+          "itemDescription01": "KS BATH TISS",
+          "itemDescription02": "30 ROLLS 2-PLY",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 22.99,
+          "itemUnitPriceAmount": 22.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "1482910",
+          "itemDescription01": "RAOS MARINARA",
+          "itemDescription02": "2PK 28OZ JAR",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 11.44,
+          "itemUnitPriceAmount": 11.44,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "399905",
+          "itemDescription01": "/1482910",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 13,
+          "unit": -1,
+          "amount": -3.00,
+          "itemUnitPriceAmount": 3.00,
+          "taxFlag": "N"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2026-04-14T16:22:00",
+      "transactionDate": "2026-04-14",
+      "transactionBarcode": "2046200501922604141622",
+      "transactionNumber": 192,
+      "registerNumber": 5,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 258.31,
+      "taxes": 5.12,
+      "total": 263.43,
+      "instantSavings": 4.00,
+      "totalItemCount": 11,
+      "itemArray": [
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 8.49,
+          "itemUnitPriceAmount": 8.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "772195",
+          "itemDescription01": "KS PARMIGIANO",
+          "itemDescription02": "AGED 24 MOS WEDGE",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 21.49,
+          "itemUnitPriceAmount": 21.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1272982",
+          "itemDescription01": "ORG AVOCADOS",
+          "itemDescription02": "6 CT BAG HASS",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 7.99,
+          "itemUnitPriceAmount": 7.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 24.99,
+          "itemUnitPriceAmount": 24.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 54.99,
+          "itemUnitPriceAmount": 54.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "889120",
+          "itemDescription01": "ATL SALMON",
+          "itemDescription02": "FARMED FILLET",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 31.99,
+          "itemUnitPriceAmount": 31.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 21.49,
+          "itemUnitPriceAmount": 21.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 34.99,
+          "itemUnitPriceAmount": 34.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "119982",
+          "itemDescription01": "KS PAPER TWL",
+          "itemDescription02": "12 BIG ROLLS",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 20.99,
+          "itemUnitPriceAmount": 20.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "587321",
+          "itemDescription01": "KS GRASS BTR",
+          "itemDescription02": "NZ SALTED 4X8OZ",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 11.99,
+          "itemUnitPriceAmount": 11.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "654399",
+          "itemDescription01": "CASCADE PLAT",
+          "itemDescription02": "92CT ACTIONPACS",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 22.91,
+          "itemUnitPriceAmount": 22.91,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "399906",
+          "itemDescription01": "/654399",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 14,
+          "unit": -1,
+          "amount": -4.00,
+          "itemUnitPriceAmount": 4.00,
+          "taxFlag": "Y"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2025-10-12T14:15:00",
+      "transactionDate": "2025-10-12",
+      "transactionBarcode": "2046200301442510121415",
+      "transactionNumber": 144,
+      "registerNumber": 3,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 236.88,
+      "taxes": 4.75,
+      "total": 241.63,
+      "instantSavings": 2.50,
+      "totalItemCount": 12,
+      "itemArray": [
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 7.99,
+          "itemUnitPriceAmount": 7.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "772195",
+          "itemDescription01": "KS PARMIGIANO",
+          "itemDescription02": "AGED 24 MOS WEDGE",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 20.49,
+          "itemUnitPriceAmount": 20.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1272982",
+          "itemDescription01": "ORG AVOCADOS",
+          "itemDescription02": "6 CT BAG HASS",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 7.49,
+          "itemUnitPriceAmount": 7.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 22.99,
+          "itemUnitPriceAmount": 22.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1482910",
+          "itemDescription01": "RAOS MARINARA",
+          "itemDescription02": "2PK 28OZ JAR",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 11.89,
+          "itemUnitPriceAmount": 11.89,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "47772",
+          "itemDescription01": "ROTISSERIE",
+          "itemDescription02": "KIRKLAND CHICKEN",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 4.99,
+          "itemUnitPriceAmount": 4.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "988812",
+          "itemDescription01": "KS BATH TISS",
+          "itemDescription02": "30 ROLLS 2-PLY",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 21.49,
+          "itemUnitPriceAmount": 21.49,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 51.99,
+          "itemUnitPriceAmount": 51.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "889120",
+          "itemDescription01": "ATL SALMON",
+          "itemDescription02": "FARMED FILLET",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 29.99,
+          "itemUnitPriceAmount": 29.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 18.99,
+          "itemUnitPriceAmount": 18.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 32.99,
+          "itemUnitPriceAmount": 32.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "741852",
+          "itemDescription01": "ORG BERRIES",
+          "itemDescription02": "18OZ BLUEBERRIES",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 8.09,
+          "itemUnitPriceAmount": 8.09,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "399907",
+          "itemDescription01": "/1482910",
+          "itemDescription02": "INSTANT SAVINGS",
+          "itemDepartmentNumber": 13,
+          "unit": -1,
+          "amount": -2.50,
+          "itemUnitPriceAmount": 2.50,
+          "taxFlag": "N"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2025-03-18T11:30:00",
+      "transactionDate": "2025-03-18",
+      "transactionBarcode": "2046200100992503181130",
+      "transactionNumber": 99,
+      "registerNumber": 1,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 218.59,
+      "taxes": 4.30,
+      "total": 222.89,
+      "instantSavings": 0.00,
+      "totalItemCount": 11,
+      "itemArray": [
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 7.69,
+          "itemUnitPriceAmount": 7.69,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "772195",
+          "itemDescription01": "KS PARMIGIANO",
+          "itemDescription02": "AGED 24 MOS WEDGE",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 19.79,
+          "itemUnitPriceAmount": 19.79,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 21.49,
+          "itemUnitPriceAmount": 21.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "47772",
+          "itemDescription01": "ROTISSERIE",
+          "itemDescription02": "KIRKLAND CHICKEN",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 4.99,
+          "itemUnitPriceAmount": 4.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 48.99,
+          "itemUnitPriceAmount": 48.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "889120",
+          "itemDescription01": "ATL SALMON",
+          "itemDescription02": "FARMED FILLET",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 28.49,
+          "itemUnitPriceAmount": 28.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 16.99,
+          "itemUnitPriceAmount": 16.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "119982",
+          "itemDescription01": "KS PAPER TWL",
+          "itemDescription02": "12 BIG ROLLS",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 19.99,
+          "itemUnitPriceAmount": 19.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 30.99,
+          "itemUnitPriceAmount": 30.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "587321",
+          "itemDescription01": "KS GRASS BTR",
+          "itemDescription02": "NZ SALTED 4X8OZ",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 11.49,
+          "itemUnitPriceAmount": 11.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "741852",
+          "itemDescription01": "ORG BERRIES",
+          "itemDescription02": "18OZ BLUEBERRIES",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 7.69,
+          "itemUnitPriceAmount": 7.69,
+          "taxFlag": "N"
+        }
+      ]
+    },
+    {
+      "warehouseName": "CARLSBAD",
+      "warehouseShortName": "CARLSBAD",
+      "warehouseNumber": 462,
+      "receiptType": "In-Warehouse",
+      "documentType": "warehouse",
+      "transactionDateTime": "2024-10-08T18:05:00",
+      "transactionDate": "2024-10-08",
+      "transactionBarcode": "2046200802102410081805",
+      "transactionNumber": 210,
+      "registerNumber": 8,
+      "transactionType": "Sales",
+      "warehouseCity": "CARLSBAD",
+      "warehouseState": "CA",
+      "subTotal": 245.38,
+      "taxes": 4.95,
+      "total": 250.33,
+      "instantSavings": 0.00,
+      "totalItemCount": 14,
+      "itemArray": [
+        {
+          "itemNumber": "1068080",
+          "itemDescription01": "KS ORG EGGS",
+          "itemDescription02": "24CT PASTURE RAISED",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 7.29,
+          "itemUnitPriceAmount": 7.29,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "772195",
+          "itemDescription01": "KS PARMIGIANO",
+          "itemDescription02": "AGED 24 MOS WEDGE",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 18.99,
+          "itemUnitPriceAmount": 18.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1272982",
+          "itemDescription01": "ORG AVOCADOS",
+          "itemDescription02": "6 CT BAG HASS",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 6.99,
+          "itemUnitPriceAmount": 6.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "512569",
+          "itemDescription01": "KS OLIVE OIL",
+          "itemDescription02": "2L ORGANIC EVOO",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 19.99,
+          "itemUnitPriceAmount": 19.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1482910",
+          "itemDescription01": "RAOS MARINARA",
+          "itemDescription02": "2PK 28OZ JAR",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 10.99,
+          "itemUnitPriceAmount": 10.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "47772",
+          "itemDescription01": "ROTISSERIE",
+          "itemDescription02": "KIRKLAND CHICKEN",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 4.99,
+          "itemUnitPriceAmount": 4.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "988812",
+          "itemDescription01": "KS BATH TISS",
+          "itemDescription02": "30 ROLLS 2-PLY",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 19.99,
+          "itemUnitPriceAmount": 19.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "44990",
+          "itemDescription01": "USDA RIBEYE",
+          "itemDescription02": "CHOICE STEAK PACK",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 45.99,
+          "itemUnitPriceAmount": 45.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "889120",
+          "itemDescription01": "ATL SALMON",
+          "itemDescription02": "FARMED FILLET",
+          "itemDepartmentNumber": 61,
+          "unit": 1,
+          "amount": 26.99,
+          "itemUnitPriceAmount": 26.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "1014521",
+          "itemDescription01": "KS COFFEE",
+          "itemDescription02": "COLOMBIAN SUPREMO 3LB",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 15.49,
+          "itemUnitPriceAmount": 15.49,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "119982",
+          "itemDescription01": "KS PAPER TWL",
+          "itemDescription02": "12 BIG ROLLS",
+          "itemDepartmentNumber": 14,
+          "unit": 1,
+          "amount": 18.99,
+          "itemUnitPriceAmount": 18.99,
+          "taxFlag": "Y"
+        },
+        {
+          "itemNumber": "1334510",
+          "itemDescription01": "FAIRLIFE SHAKE",
+          "itemDescription02": "18PK 30G PROTEIN",
+          "itemDepartmentNumber": 13,
+          "unit": 1,
+          "amount": 28.99,
+          "itemUnitPriceAmount": 28.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "587321",
+          "itemDescription01": "KS GRASS BTR",
+          "itemDescription02": "NZ SALTED 4X8OZ",
+          "itemDepartmentNumber": 65,
+          "unit": 1,
+          "amount": 10.99,
+          "itemUnitPriceAmount": 10.99,
+          "taxFlag": "N"
+        },
+        {
+          "itemNumber": "741852",
+          "itemDescription01": "ORG BERRIES",
+          "itemDescription02": "18OZ BLUEBERRIES",
+          "itemDepartmentNumber": 62,
+          "unit": 1,
+          "amount": 8.70,
+          "itemUnitPriceAmount": 8.70,
+          "taxFlag": "N"
+        }
+      ]
+    }
+  ]
+}
