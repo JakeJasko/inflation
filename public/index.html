@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.5.0" />
+  <link rel="stylesheet" href="styles.css?v=2.6.0" />
   <script>
     (function () {
       try {
@@ -64,13 +64,35 @@
           </button>
         </div>
 
-        <div class="segmented-basis" role="group" aria-label="Pricing Basis Methodology">
-          <button type="button" class="basis-btn active" data-price-mode="list" id="modeListBtn" title="Shelf List Price (ignores manufacturer instant rebate volatility to track true product inflation)">
-            Shelf List Basis
-          </button>
-          <button type="button" class="basis-btn" data-price-mode="net" id="modeNetBtn" title="Net Paid Basis (reflects actual cash outflow after Costco Instant Savings coupons)">
-            Net Out-of-Pocket
-          </button>
+        <div class="segmented-basis-wrap">
+          <div class="segmented-basis" role="group" aria-label="Pricing Basis Methodology">
+            <button type="button" class="basis-btn active" data-price-mode="list" id="modeListBtn" title="Shelf Price: Compares regular prices before instant savings">
+              Shelf Price
+            </button>
+            <button type="button" class="basis-btn" data-price-mode="net" id="modeNetBtn" title="Net Paid: Compares actual out-of-pocket amount paid after instant savings">
+              Net Paid
+            </button>
+          </div>
+          <div class="info-tooltip-wrap">
+            <button type="button" class="metric-info-btn" aria-label="Explain difference between Shelf Price and Net Paid">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="12" y1="16" x2="12" y2="12"></line>
+                <line x1="12" y1="8" x2="12.01" y2="8"></line>
+              </svg>
+            </button>
+            <div class="info-tooltip-popover tooltip-align-right" role="tooltip">
+              <div class="tooltip-title">Price Basis: Shelf Price vs. Net Paid</div>
+              <div class="tooltip-section">
+                <strong>Shelf Price (Pre-Discount):</strong>
+                <p>Uses regular sticker prices before manufacturer rebates. Best for seeing pure product inflation without the noise of temporary promotional sales.</p>
+              </div>
+              <div class="tooltip-section">
+                <strong>Net Paid (Post-Discount):</strong>
+                <p>Uses what you actually paid after all Costco Instant Savings coupons. Best for seeing the real out-of-pocket cash impact on your grocery bills.</p>
+              </div>
+            </div>
+          </div>
         </div>
 
         <button type="button" class="btn-terminal-secondary" id="exportCsvBtn" title="Export SKU Inflation Table to CSV">
@@ -99,8 +121,22 @@
     <div class="kpi-strip-inner">
       <div class="kpi-metric-cell key-exposure">
         <div class="metric-head">
-          <span class="metric-caption">PERSONAL CPI (YO-Y)</span>
-          <span class="metric-tag tag-neutral" id="kpiBasisTag">Shelf Basis</span>
+          <div class="metric-caption-wrap">
+            <span class="metric-caption">PERSONAL INFLATION (YOY)</span>
+            <div class="info-tooltip-wrap">
+              <button type="button" class="metric-info-btn" aria-label="Explain Personal Inflation calculation">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </button>
+              <div class="info-tooltip-popover" role="tooltip">
+                <div class="tooltip-title">Personal Inflation Rate (YoY)</div>
+                <p class="tooltip-desc">Measures how much your grocery prices changed per year based on the exact repeat products and quantities you actually bought.</p>
+                <div class="tooltip-formula">
+                  <strong>Methodology:</strong> Laspeyres price index. Compares the total cost of your historical grocery basket at latest prices vs. baseline prices.
+                </div>
+              </div>
+            </div>
+          </div>
+          <span class="metric-tag tag-neutral" id="kpiBasisTag">Shelf Price</span>
         </div>
         <div class="metric-body">
           <span class="metric-primary-val" id="kpiAnnualizedInflation">--</span>
@@ -111,7 +147,21 @@
 
       <div class="kpi-metric-cell">
         <div class="metric-head">
-          <span class="metric-caption">PERSONAL CPI INDEX vs. US BLS</span>
+          <div class="metric-caption-wrap">
+            <span class="metric-caption">PERSONAL CPI vs. US BLS</span>
+            <div class="info-tooltip-wrap">
+              <button type="button" class="metric-info-btn" aria-label="Explain Personal CPI vs BLS comparison">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </button>
+              <div class="info-tooltip-popover" role="tooltip">
+                <div class="tooltip-title">Personal CPI vs. BLS Benchmark</div>
+                <p class="tooltip-desc">Tracks your household index against the official US Bureau of Labor Statistics (BLS) Food-at-Home Consumer Price Index.</p>
+                <div class="tooltip-formula">
+                  <strong>Baseline 100.0:</strong> Normalizes your earliest receipt date to 100.0. The spread badge (+ or &minus;) shows whether your grocery inflation is outpacing or beating the US national benchmark (2.9%/yr).
+                </div>
+              </div>
+            </div>
+          </div>
           <span class="metric-tag tag-neutral" id="kpiBenchmarkDate">Base 100.0</span>
         </div>
         <div class="metric-body">
@@ -123,7 +173,21 @@
 
       <div class="kpi-metric-cell">
         <div class="metric-head">
-          <span class="metric-caption">ANNUAL INFLATION COST</span>
+          <div class="metric-caption-wrap">
+            <span class="metric-caption">ANNUAL INFLATION COST</span>
+            <div class="info-tooltip-wrap">
+              <button type="button" class="metric-info-btn" aria-label="Explain Annual Inflation Cost">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </button>
+              <div class="info-tooltip-popover" role="tooltip">
+                <div class="tooltip-title">Annual Inflation Cost</div>
+                <p class="tooltip-desc">The estimated extra dollar amount you must spend each year to buy the exact same repeat groceries at current prices compared to original baseline prices.</p>
+                <div class="tooltip-formula">
+                  <strong>Calculation:</strong> (Current Basket Cost &minus; Original Baseline Cost) &divide; Years Observed.
+                </div>
+              </div>
+            </div>
+          </div>
           <span class="metric-tag tag-neutral" id="kpiBasketCountPill">0 Repeat SKUs</span>
         </div>
         <div class="metric-body">
@@ -135,7 +199,24 @@
 
       <div class="kpi-metric-cell">
         <div class="metric-head">
-          <span class="metric-caption">DISCOUNT SAVINGS RATE</span>
+          <div class="metric-caption-wrap">
+            <span class="metric-caption">DISCOUNT SAVINGS RATE</span>
+            <div class="info-tooltip-wrap">
+              <button type="button" class="metric-info-btn" aria-label="Explain Discount Savings Rate calculation">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              </button>
+              <div class="info-tooltip-popover tooltip-align-right" role="tooltip">
+                <div class="tooltip-title">Discount Savings Rate</div>
+                <p class="tooltip-desc">Measures what percentage of your grocery price increases was absorbed or offset by manufacturer rebates and Costco Instant Savings coupons.</p>
+                <div class="tooltip-formula">
+                  <strong>Formula:</strong> Total Instant Discounts ($) &divide; Gross Price Increases ($) &times; 100.
+                </div>
+                <div class="tooltip-desc" style="margin-top:0.45rem; font-style:italic;">
+                  Example: If item prices rose by $100 across your basket, but you redeemed $35 in instant discounts, promotions offset 35% of the price rise.
+                </div>
+              </div>
+            </div>
+          </div>
           <span class="metric-tag tag-neutral">INSTANT SAVINGS</span>
         </div>
         <div class="metric-body">
@@ -272,16 +353,16 @@
             <table class="terminal-table" role="table" aria-label="SKU Price Inflation Table">
               <thead>
                 <tr>
-                  <th scope="col">Costco SKU</th>
-                  <th scope="col">Product Description</th>
-                  <th scope="col">Dept</th>
-                  <th scope="col" class="num-col">Spend Weight</th>
-                  <th scope="col" class="num-col">Orders</th>
-                  <th scope="col" class="num-col">First Price</th>
-                  <th scope="col" class="num-col">Latest Price</th>
-                  <th scope="col">Price Trend</th>
-                  <th scope="col" class="num-col">Added Cost</th>
-                  <th scope="col" class="num-col">Inflation</th>
+                  <th scope="col" title="Unique Costco Item Number">Costco SKU</th>
+                  <th scope="col" title="Item name and product line">Product Description</th>
+                  <th scope="col" title="Warehouse merchandise department">Dept</th>
+                  <th scope="col" class="num-col" title="Percentage of your total repeat grocery spend represented by this item">Spend Weight</th>
+                  <th scope="col" class="num-col" title="Total receipts containing this item and total units purchased">Orders</th>
+                  <th scope="col" class="num-col" title="Unit price on your earliest recorded purchase of this item">First Price</th>
+                  <th scope="col" class="num-col" title="Unit price on your most recent purchase of this item">Latest Price</th>
+                  <th scope="col" title="Visual price trajectory from earliest to latest purchase">Price Trend</th>
+                  <th scope="col" class="num-col" title="Annual dollar impact: (Price Change × Units Purchased ÷ Years Observed)">Added Cost</th>
+                  <th scope="col" class="num-col" title="Total percentage price change from first purchase to latest purchase">Inflation</th>
                 </tr>
               </thead>
               <tbody id="skuTableBody"></tbody>
@@ -302,17 +383,17 @@
 
           <div class="dossier-stats-grid">
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">First Price</span>
+              <span class="dossier-stat-label" title="Unit price on your earliest recorded purchase date">First Price</span>
               <span class="dossier-stat-val" id="inspFirstPrice">--</span>
               <span class="dossier-stat-sub" id="inspFirstDate">--</span>
             </div>
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">Latest Price</span>
+              <span class="dossier-stat-label" title="Unit price on your most recent recorded purchase date">Latest Price</span>
               <span class="dossier-stat-val" id="inspLatestPrice">--</span>
               <span class="dossier-stat-sub" id="inspLatestDate">--</span>
             </div>
             <div class="dossier-stat-card">
-              <span class="dossier-stat-label">Annualized Rate</span>
+              <span class="dossier-stat-label" title="Compounded annual price change (CAGR) over your purchase history">Annualized Rate</span>
               <span class="dossier-stat-val" id="inspAnnualized">--</span>
               <span class="dossier-stat-sub" id="inspTotalUnits">-- units bought</span>
             </div>
@@ -379,19 +460,19 @@
         </div>
         <div class="scenario-body" id="scenarioPlannerBody">
           <div class="scenario-metric-box">
-            <span class="scenario-label">Baseline Annual Spend</span>
+            <span class="scenario-label" title="Your annualized grocery expenditure across repeat items">Baseline Annual Spend</span>
             <span class="scenario-val" id="scenBaseSpend">$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">12-Month Projected Spend</span>
+            <span class="scenario-label" title="Estimated forward grocery spending if historical inflation rate continues">12-Month Projected Spend</span>
             <span class="scenario-val text-amber" id="scenProjectedSpend">$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">Projected Price Increase</span>
+            <span class="scenario-label" title="Extra dollar spending required solely due to projected price increases">Projected Price Increase</span>
             <span class="scenario-val text-crimson" id="scenDeltaSpend">+$0.00</span>
           </div>
           <div class="scenario-metric-box">
-            <span class="scenario-label">Projected Instant Savings</span>
+            <span class="scenario-label" title="Estimated discount savings assuming your historical discount rate continues">Projected Instant Savings</span>
             <span class="scenario-val text-emerald" id="scenSavingsBuffer">-$0.00</span>
           </div>
         </div>
@@ -556,6 +637,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.5.0"></script>
+  <script src="app.js?v=2.6.0"></script>
 </body>
 </html>

@@ -374,6 +374,14 @@
 
       document.getElementById('kpiShieldRatio').textContent = '--';
       document.getElementById('kpiTotalSavingsCaptured').textContent = '$0.00 Saved';
+      const basisTag = document.getElementById('kpiBasisTag');
+      if (basisTag) {
+        basisTag.textContent = state.priceMode === 'net' ? 'Net Paid' : 'Shelf Price';
+      }
+      const shieldSub = document.getElementById('kpiShieldSubtext');
+      if (shieldSub) {
+        shieldSub.textContent = 'Share of price increases offset by instant savings & discounts';
+      }
 
       if (emptyPane) {
         emptyPane.hidden = false;
@@ -423,8 +431,10 @@
     }
 
     // Executive KPI Strip
-    document.getElementById('kpiBasisTag').textContent =
-      state.priceMode === 'net' ? 'Net Paid Basis' : 'Shelf List Basis';
+    const basisTag = document.getElementById('kpiBasisTag');
+    if (basisTag) {
+      basisTag.textContent = state.priceMode === 'net' ? 'Net Paid' : 'Shelf Price';
+    }
     document.getElementById('kpiAnnualizedInflation').textContent = formatPct(
       analytics.annualizedBasketInflationPct,
       1
@@ -449,6 +459,10 @@
 
     document.getElementById('kpiShieldRatio').textContent = `${analytics.savingsShieldRatio.toFixed(1)}%`;
     document.getElementById('kpiTotalSavingsCaptured').textContent = `${formatCurrency(analytics.totalInstantSavings)} Saved`;
+    const shieldSub = document.getElementById('kpiShieldSubtext');
+    if (shieldSub) {
+      shieldSub.textContent = `Discounts absorbed ${analytics.savingsShieldRatio.toFixed(1)}% of price increases`;
+    }
 
     // Forward Scenario Planner
     const annualBaseEstimate = analytics.totalGrossSpend / 3;
@@ -1710,12 +1724,35 @@
     });
   }
 
+  function setupInfoTooltips() {
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('.metric-info-btn');
+      const allWraps = document.querySelectorAll('.info-tooltip-wrap');
+      if (btn) {
+        e.stopPropagation();
+        const wrap = btn.closest('.info-tooltip-wrap');
+        const wasOpen = wrap.classList.contains('is-open');
+        allWraps.forEach((w) => w.classList.remove('is-open'));
+        if (!wasOpen) wrap.classList.add('is-open');
+      } else if (!e.target.closest('.info-tooltip-popover')) {
+        allWraps.forEach((w) => w.classList.remove('is-open'));
+      }
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        document.querySelectorAll('.info-tooltip-wrap').forEach((w) => w.classList.remove('is-open'));
+      }
+    });
+  }
+
   async function init() {
     setupDialog();
     setupNavigation();
     setupFilters();
     setupSyncAndImportControls();
     setupMainChartHover();
+    setupInfoTooltips();
 
     // 1. Load export script text
     const isLocalhost =

@@ -292,6 +292,137 @@ pre,
   border: 1px solid var(--border-subtle);
 }
 
+.segmented-basis-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.metric-caption-wrap {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.info-tooltip-wrap {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+}
+
+.metric-info-btn {
+  background: transparent;
+  border: none;
+  padding: 0;
+  width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  cursor: pointer;
+  border-radius: 50%;
+  transition: all 0.15s ease;
+  line-height: 1;
+}
+
+.metric-info-btn:hover,
+.metric-info-btn:focus-visible,
+.info-tooltip-wrap.is-open .metric-info-btn {
+  color: var(--costco-blue);
+  background: var(--bg-surface-elevated);
+}
+[data-theme="dark"] .metric-info-btn:hover,
+[data-theme="dark"] .metric-info-btn:focus-visible,
+[data-theme="dark"] .info-tooltip-wrap.is-open .metric-info-btn {
+  color: var(--fin-cyan);
+}
+
+.info-tooltip-popover {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  z-index: 60;
+  width: 300px;
+  max-width: calc(100vw - 32px);
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.16), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
+  padding: 0.85rem 1rem;
+  font-size: 0.8125rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+  pointer-events: none;
+  opacity: 0;
+  transform: translateY(-4px);
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  text-align: left;
+  text-transform: none;
+  letter-spacing: normal;
+}
+[data-theme="dark"] .info-tooltip-popover {
+  background: var(--bg-surface-elevated);
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.55), 0 8px 10px -6px rgba(0, 0, 0, 0.45);
+}
+
+.info-tooltip-wrap:hover .info-tooltip-popover,
+.info-tooltip-wrap:focus-within .info-tooltip-popover,
+.info-tooltip-wrap.is-open .info-tooltip-popover {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.info-tooltip-popover.tooltip-align-right {
+  left: auto;
+  right: 0;
+}
+
+.tooltip-title {
+  font-weight: 700;
+  font-size: 0.8125rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.tooltip-desc {
+  margin: 0 0 0.45rem;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
+.tooltip-formula {
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  padding: 0.45rem 0.6rem;
+  border-radius: var(--radius-sm);
+  font-size: 0.75rem;
+  margin-top: 0.45rem;
+  color: var(--text-secondary);
+}
+
+.tooltip-section {
+  margin-bottom: 0.5rem;
+}
+.tooltip-section:last-child {
+  margin-bottom: 0;
+}
+.tooltip-section strong {
+  color: var(--text-primary);
+  font-size: 0.75rem;
+  display: block;
+  margin-bottom: 0.15rem;
+}
+.tooltip-section p {
+  margin: 0;
+  font-size: 0.75rem;
+  color: var(--text-secondary);
+}
+
 .basis-btn {
   background: transparent;
   color: var(--text-muted);
