@@ -66,6 +66,10 @@
   box-sizing: border-box;
 }
 
+[hidden] {
+  display: none !important;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -1315,6 +1319,10 @@ dialog::backdrop {
   align-items: center;
   padding: 3rem 1.5rem;
   min-height: 520px;
+}
+
+.empty-terminal-pane[hidden] {
+  display: none !important;
 }
 
 .empty-terminal-card {

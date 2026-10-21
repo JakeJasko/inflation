@@ -377,17 +377,26 @@
       document.getElementById('kpiShieldRatio').textContent = '--';
       document.getElementById('kpiTotalSavingsCaptured').textContent = '$0.00 Saved';
 
-      if (emptyPane) emptyPane.hidden = false;
+      if (emptyPane) {
+        emptyPane.hidden = false;
+        emptyPane.style.display = '';
+      }
       document.querySelectorAll('.terminal-view-pane').forEach((pane) => {
         pane.hidden = true;
+        pane.classList.remove('active');
       });
       return;
     }
 
     // Active receipts populated
-    if (emptyPane) emptyPane.hidden = true;
+    if (emptyPane) {
+      emptyPane.hidden = true;
+      emptyPane.style.display = 'none';
+    }
     document.querySelectorAll('.terminal-view-pane').forEach((pane) => {
-      pane.hidden = pane.id !== state.currentView;
+      const isTarget = pane.id === state.currentView;
+      pane.hidden = !isTarget;
+      pane.classList.toggle('active', isTarget);
     });
 
     const analytics = analyzeReceipts(state.receipts, state.priceMode);
