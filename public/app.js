@@ -1125,19 +1125,25 @@
   }
 
   async function loadDataset() {
-    // 1. Try local Node server if running
-    try {
-      const res = await fetch('/api/receipts');
-      if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
-        const data = await res.json();
-        if (data.receipts && data.receipts.length > 0) {
-          state.source = data.source || 'live';
-          state.receipts = data.receipts;
-          renderTerminal();
-          return;
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+
+    // 1. Try local Node server if running on localhost
+    if (isLocalhost) {
+      try {
+        const res = await fetch('/api/receipts');
+        if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+          const data = await res.json();
+          if (data.receipts && data.receipts.length > 0) {
+            state.source = data.source || 'live';
+            state.receipts = data.receipts;
+            renderTerminal();
+            return;
+          }
         }
-      }
-    } catch (_) {}
+      } catch (_) {}
+    }
 
     // 2. Client-side static fallback for GitHub Pages (localStorage)
     const stored = localStorage.getItem('pinflation_user_receipts');
@@ -1166,26 +1172,32 @@
         ? parsed
         : (parsed.receipts || parsed?.data?.receiptsWithCounts?.receipts || []);
 
-      // Try local server first
-      try {
-        const res = await fetch('/api/import', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ data: parsed, merge: true })
-        });
-        if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
-          const result = await res.json();
-          state.source = result.source;
-          state.receipts = result.receipts;
-          localStorage.setItem('pinflation_user_receipts', JSON.stringify(result.receipts));
-          renderTerminal();
-          showStatus(
-            `✅ Imported ${result.importedCount} receipts (${result.totalCount} total active).`,
-            false
-          );
-          return;
-        }
-      } catch (_) {}
+      const isLocalhost =
+        window.location.hostname === 'localhost' ||
+        window.location.hostname === '127.0.0.1';
+
+      // Try local server only if running on localhost
+      if (isLocalhost) {
+        try {
+          const res = await fetch('/api/import', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: parsed, merge: true })
+          });
+          if (res.ok && res.headers.get('content-type')?.includes('application/json')) {
+            const result = await res.json();
+            state.source = result.source;
+            state.receipts = result.receipts;
+            localStorage.setItem('pinflation_user_receipts', JSON.stringify(result.receipts));
+            renderTerminal();
+            showStatus(
+              `✅ Imported ${result.importedCount} receipts (${result.totalCount} total active).`,
+              false
+            );
+            return;
+          }
+        } catch (_) {}
+      }
 
       // In-browser client fallback for GitHub Pages
       if (incoming.length > 0) {
@@ -1703,13 +1715,19 @@
     setupMainChartHover();
 
     // 1. Load export script text
-    try {
-      const scriptRes = await fetch('/api/export-script');
-      if (scriptRes.ok) {
-        const scriptData = await scriptRes.json();
-        state.exportScriptText = scriptData.script || '';
-      }
-    } catch (_) {}
+    const isLocalhost =
+      window.location.hostname === 'localhost' ||
+      window.location.hostname === '127.0.0.1';
+
+    if (isLocalhost) {
+      try {
+        const scriptRes = await fetch('/api/export-script');
+        if (scriptRes.ok && scriptRes.headers.get('content-type')?.includes('application/json')) {
+          const scriptData = await scriptRes.json();
+          state.exportScriptText = scriptData.script || '';
+        }
+      } catch (_) {}
+    }
 
     if (!state.exportScriptText) {
       try {
@@ -1726,7 +1744,7 @@
     }
 
     // 2. Load dataset
-    await loadDataset('live');
+    await loadDataset();
   }
 
   init();
