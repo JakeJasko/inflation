@@ -150,7 +150,10 @@
 
   function getItemAliases() {
     try {
-      return JSON.parse(localStorage.getItem('pinflation_item_aliases') || '{}');
+      const raw =
+        localStorage.getItem('inflation_item_aliases') ||
+        localStorage.getItem('pinflation_item_aliases');
+      return JSON.parse(raw || '{}');
     } catch (_) {
       return {};
     }
@@ -163,7 +166,11 @@
     } else {
       delete aliases[itemNumber];
     }
-    localStorage.setItem('pinflation_item_aliases', JSON.stringify(aliases));
+    const val = JSON.stringify(aliases);
+    try {
+      localStorage.setItem('inflation_item_aliases', val);
+      localStorage.setItem('pinflation_item_aliases', val);
+    } catch (_) {}
   }
 
   function resolveItemDisplay(item) {
@@ -1416,12 +1423,14 @@
         themeBtn.setAttribute('aria-label', `Switch to ${nextMode} mode`);
       }
       try {
+        localStorage.setItem('inflation_theme', theme);
         localStorage.setItem('pinflation_theme', theme);
       } catch (_) {}
     }
 
     const currentTheme =
       document.documentElement.getAttribute('data-theme') ||
+      localStorage.getItem('inflation_theme') ||
       localStorage.getItem('pinflation_theme') ||
       'light';
     applyTheme(currentTheme);
@@ -1507,6 +1516,32 @@
     el.textContent = msg;
   }
 
+  function getStoredReceipts() {
+    try {
+      const raw =
+        localStorage.getItem('inflation_user_receipts') ||
+        localStorage.getItem('pinflation_user_receipts');
+      return raw ? JSON.parse(raw) : null;
+    } catch (_) {
+      return null;
+    }
+  }
+
+  function setStoredReceipts(receipts) {
+    try {
+      const str = typeof receipts === 'string' ? receipts : JSON.stringify(receipts);
+      localStorage.setItem('inflation_user_receipts', str);
+      localStorage.setItem('pinflation_user_receipts', str);
+    } catch (_) {}
+  }
+
+  function clearStoredReceipts() {
+    try {
+      localStorage.removeItem('inflation_user_receipts');
+      localStorage.removeItem('pinflation_user_receipts');
+    } catch (_) {}
+  }
+
   async function loadDataset() {
     const isLocalhost =
       window.location.hostname === 'localhost' ||
@@ -1529,17 +1564,12 @@
     }
 
     // 2. Client-side static fallback for GitHub Pages (localStorage)
-    const stored = localStorage.getItem('pinflation_user_receipts');
-    if (stored) {
-      try {
-        const parsed = JSON.parse(stored);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          state.source = 'live';
-          state.receipts = parsed;
-          renderTerminal();
-          return;
-        }
-      } catch (_) {}
+    const stored = getStoredReceipts();
+    if (stored && Array.isArray(stored) && stored.length > 0) {
+      state.source = 'live';
+      state.receipts = stored;
+      renderTerminal();
+      return;
     }
 
     // 3. Start with zero data and direct user to Costco Connector
@@ -1550,7 +1580,7 @@
 
   async function importJsonPayload(parsed) {
     try {
-      showStatus('Ingesting receipts into Pinflation terminal repository...', false);
+      showStatus('Ingesting receipts into terminal repository...', false);
       let incoming = Array.isArray(parsed)
         ? parsed
         : (parsed.receipts || parsed?.data?.receiptsWithCounts?.receipts || []);
@@ -1571,7 +1601,7 @@
             const result = await res.json();
             state.source = result.source;
             state.receipts = result.receipts;
-            localStorage.setItem('pinflation_user_receipts', JSON.stringify(result.receipts));
+            setStoredReceipts(result.receipts);
             renderTerminal();
             showStatus(
               `✅ Imported ${result.importedCount} receipts (${result.totalCount} total active).`,
@@ -1584,11 +1614,7 @@
 
       // In-browser client fallback for GitHub Pages
       if (incoming.length > 0) {
-        let existing = [];
-        const stored = localStorage.getItem('pinflation_user_receipts');
-        if (stored) {
-          try { existing = JSON.parse(stored); } catch(_) {}
-        }
+        let existing = getStoredReceipts() || [];
         const byKey = new Map();
         for (const r of [...incoming, ...existing]) {
           const k = r.transactionBarcode || `${r.transactionDateTime || r.transactionDate}-${r.total}`;
@@ -1597,7 +1623,7 @@
         const merged = Array.from(byKey.values()).sort(
           (a, b) => new Date(b.transactionDateTime || 0) - new Date(a.transactionDateTime || 0)
         );
-        localStorage.setItem('pinflation_user_receipts', JSON.stringify(merged));
+        setStoredReceipts(merged);
         state.source = 'live';
         state.receipts = merged;
         renderTerminal();
@@ -1653,9 +1679,7 @@
 
     document.getElementById('clearDataBtn')?.addEventListener('click', () => {
       if (confirm('Clear all stored Costco receipts from browser storage?')) {
-        try {
-          localStorage.removeItem('pinflation_user_receipts');
-        } catch (_) {}
+        clearStoredReceipts();
         state.receipts = [];
         state.source = 'none';
         renderTerminal();
@@ -1795,7 +1819,7 @@
             const result = await res.json();
             state.source = result.source;
             state.receipts = result.receipts;
-            localStorage.setItem('pinflation_user_receipts', JSON.stringify(result.receipts));
+            setStoredReceipts(result.receipts);
             renderTerminal();
             showStatus(
               `✅ Successfully synced ${result.fetchedCount} receipts from Costco.com (${result.totalCount} active receipts)!`,
@@ -2010,11 +2034,7 @@
         }
         const incoming = Array.from(byKey.values());
 
-        let existing = [];
-        const stored = localStorage.getItem('pinflation_user_receipts');
-        if (stored) {
-          try { existing = JSON.parse(stored); } catch (_) {}
-        }
+        let existing = getStoredReceipts() || [];
         for (const r of existing) {
           const k = r.transactionBarcode || `${r.transactionDateTime || r.transactionDate}-${r.total}`;
           if (!byKey.has(k)) byKey.set(k, r);
@@ -2024,7 +2044,7 @@
           (a, b) => new Date(b.transactionDateTime || 0) - new Date(a.transactionDateTime || 0)
         );
 
-        localStorage.setItem('pinflation_user_receipts', JSON.stringify(merged));
+        setStoredReceipts(merged);
         state.source = 'live';
         state.receipts = merged;
         renderTerminal();

@@ -11,7 +11,7 @@
   <script>
     (function () {
       try {
-        var saved = localStorage.getItem('pinflation_theme');
+        var saved = localStorage.getItem('inflation_theme') || localStorage.getItem('pinflation_theme');
         if (saved) {
           document.documentElement.setAttribute('data-theme', saved);
         } else {

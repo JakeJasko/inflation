@@ -1,5 +1,5 @@
 {
-  "name": "pinflation",
+  "name": "inflation",
   "version": "2.7.3",
   "description": "Personal Inflation & CPI Tracker Dashboard (Costco Edition)",
   "main": "server.js",

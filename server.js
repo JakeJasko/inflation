@@ -546,5 +546,5 @@ const server = http.createServer(async (req, res) => {
 });
 
 server.listen(PORT, () => {
-  console.log(`Pinflation server listening on http://localhost:${PORT}`);
+  console.log(`Inflation server listening on http://localhost:${PORT}`);
 });
