@@ -263,7 +263,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.3';
+  const APP_VERSION = '2.7.4';
   const state = {
     source: 'live',
     receipts: [],
@@ -861,9 +861,7 @@
           : `<span class="inflation-cell-badge ${cagrClass}" title="Compound Annual Growth Rate: ${formatPct(item.annualizedPct, 1)}/year">${formatPct(item.annualizedPct, 1)}/yr</span>`;
 
       const badgeHtml =
-        info.nameSource === 'verified'
-          ? '<span class="verified-sku-pill" title="Verified against Costco Warehouse Catalog">Verified</span>'
-          : info.nameSource === 'custom'
+        info.nameSource === 'custom'
           ? '<span class="custom-sku-pill" title="Custom user nickname">Custom</span>'
           : '';
 
@@ -933,9 +931,7 @@
     document.getElementById('inspectorSku').textContent = `COSTCO SKU #${item.itemNumber}`;
 
     const badgeHtml =
-      info.nameSource === 'verified'
-        ? '<span class="verified-sku-pill" title="Verified against Costco Warehouse Catalog">Verified</span>'
-        : info.nameSource === 'custom'
+      info.nameSource === 'custom'
         ? '<span class="custom-sku-pill" title="Custom user nickname">Custom</span>'
         : '';
 

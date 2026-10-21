@@ -906,19 +906,6 @@ pre,
   flex-wrap: wrap;
 }
 
-.verified-sku-pill {
-  display: inline-flex;
-  align-items: center;
-  font-size: 0.6875rem;
-  font-weight: 600;
-  padding: 0.05rem 0.35rem;
-  border-radius: var(--radius-sm);
-  background: var(--fin-emerald-bg);
-  color: var(--fin-emerald);
-  border: 1px solid rgba(16, 185, 129, 0.25);
-  line-height: 1.3;
-}
-
 .custom-sku-pill {
   display: inline-flex;
   align-items: center;
