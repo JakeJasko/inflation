@@ -776,6 +776,78 @@ pre,
   text-align: right;
 }
 
+.terminal-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: color 0.12s ease, background-color 0.12s ease;
+}
+
+.terminal-table th.sortable:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.terminal-table th.sortable:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: -2px;
+}
+
+.th-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+}
+
+.sort-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 13px;
+  height: 13px;
+  flex-shrink: 0;
+}
+
+.sort-icon .icon-sort-none {
+  display: inline-block;
+  opacity: 0.35;
+}
+.sort-icon .icon-sort-asc,
+.sort-icon .icon-sort-desc {
+  display: none;
+}
+
+.terminal-table th.sortable:hover .sort-icon .icon-sort-none {
+  opacity: 0.75;
+}
+
+.terminal-table th[aria-sort="ascending"] {
+  color: var(--costco-blue);
+}
+[data-theme="dark"] .terminal-table th[aria-sort="ascending"] {
+  color: var(--fin-cyan);
+}
+.terminal-table th[aria-sort="ascending"] .sort-icon .icon-sort-none {
+  display: none;
+}
+.terminal-table th[aria-sort="ascending"] .sort-icon .icon-sort-asc {
+  display: inline-block;
+  color: inherit;
+}
+
+.terminal-table th[aria-sort="descending"] {
+  color: var(--costco-blue);
+}
+[data-theme="dark"] .terminal-table th[aria-sort="descending"] {
+  color: var(--fin-cyan);
+}
+.terminal-table th[aria-sort="descending"] .sort-icon .icon-sort-none {
+  display: none;
+}
+.terminal-table th[aria-sort="descending"] .sort-icon .icon-sort-desc {
+  display: inline-block;
+  color: inherit;
+}
+
 .terminal-table tbody tr {
   border-bottom: 1px solid var(--border-subtle);
   cursor: pointer;

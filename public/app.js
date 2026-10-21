@@ -60,7 +60,8 @@
     selectedSku: null,
     searchQuery: '',
     deptFilter: 'all',
-    sortBy: 'spend_desc',
+    sortCol: 'spend',
+    sortDir: 'desc',
     repeatOnly: true,
     receiptQuery: '',
     exportScriptText: '',
@@ -532,6 +533,26 @@
     `;
   }
 
+  function updateTableHeaderSortIndicators() {
+    document.querySelectorAll('.terminal-table th.sortable').forEach((th) => {
+      const col = th.getAttribute('data-sort');
+      if (col === state.sortCol) {
+        th.setAttribute('aria-sort', state.sortDir === 'asc' ? 'ascending' : 'descending');
+      } else {
+        th.setAttribute('aria-sort', 'none');
+      }
+    });
+
+    const sortSelect = document.getElementById('sortFilterSelect');
+    if (sortSelect) {
+      if (state.sortCol === 'spend' && state.sortDir === 'desc') sortSelect.value = 'spend_desc';
+      else if (state.sortCol === 'inflation' && state.sortDir === 'desc') sortSelect.value = 'pct_desc';
+      else if (state.sortCol === 'inflation' && state.sortDir === 'asc') sortSelect.value = 'pct_asc';
+      else if (state.sortCol === 'addedCost' && state.sortDir === 'desc') sortSelect.value = 'abs_desc';
+      else if (state.sortCol === 'orders' && state.sortDir === 'desc') sortSelect.value = 'count_desc';
+    }
+  }
+
   function renderSkuTable() {
     const tbody = document.getElementById('skuTableBody');
     const q = state.searchQuery.toLowerCase().trim();
@@ -547,21 +568,45 @@
     });
 
     filtered.sort((a, b) => {
-      switch (state.sortBy) {
-        case 'spend_desc':
-          return b.totalSpend - a.totalSpend;
-        case 'pct_desc':
-          return b.pctChange - a.pctChange;
-        case 'abs_desc':
-          return b.absChange - a.absChange;
-        case 'pct_asc':
-          return a.pctChange - b.pctChange;
-        case 'count_desc':
-          return b.purchaseCount - a.purchaseCount;
+      let res = 0;
+      switch (state.sortCol) {
+        case 'sku': {
+          const numA = parseInt(a.itemNumber, 10) || 0;
+          const numB = parseInt(b.itemNumber, 10) || 0;
+          res = numA !== numB ? numA - numB : (a.itemNumber || '').localeCompare(b.itemNumber || '');
+          break;
+        }
+        case 'name':
+          res = (a.name || '').localeCompare(b.name || '');
+          break;
+        case 'dept':
+          res = (a.deptName || '').localeCompare(b.deptName || '');
+          break;
+        case 'spend':
+          res = a.totalSpend - b.totalSpend;
+          break;
+        case 'orders':
+          res = (a.purchaseCount - b.purchaseCount) || (a.totalUnits - b.totalUnits);
+          break;
+        case 'firstPrice':
+          res = a.firstPrice - b.firstPrice;
+          break;
+        case 'latestPrice':
+          res = a.latestPrice - b.latestPrice;
+          break;
+        case 'addedCost':
+          res = a.absChange - b.absChange;
+          break;
+        case 'inflation':
+          res = a.pctChange - b.pctChange;
+          break;
         default:
-          return b.totalSpend - a.totalSpend;
+          res = a.totalSpend - b.totalSpend;
       }
+      return state.sortDir === 'desc' ? -res : res;
     });
+
+    updateTableHeaderSortIndicators();
 
     if (
       (!state.selectedSku || !filtered.some((s) => s.itemNumber === state.selectedSku)) &&
@@ -1711,8 +1756,35 @@
     });
 
     document.getElementById('sortFilterSelect').addEventListener('change', (e) => {
-      state.sortBy = e.target.value;
+      const val = e.target.value;
+      if (val === 'spend_desc') { state.sortCol = 'spend'; state.sortDir = 'desc'; }
+      else if (val === 'pct_desc') { state.sortCol = 'inflation'; state.sortDir = 'desc'; }
+      else if (val === 'abs_desc') { state.sortCol = 'addedCost'; state.sortDir = 'desc'; }
+      else if (val === 'pct_asc') { state.sortCol = 'inflation'; state.sortDir = 'asc'; }
+      else if (val === 'count_desc') { state.sortCol = 'orders'; state.sortDir = 'desc'; }
       renderSkuTable();
+    });
+
+    document.querySelectorAll('.terminal-table th.sortable').forEach((th) => {
+      function triggerHeaderSort() {
+        const col = th.getAttribute('data-sort');
+        if (!col) return;
+        if (state.sortCol === col) {
+          state.sortDir = state.sortDir === 'asc' ? 'desc' : 'asc';
+        } else {
+          state.sortCol = col;
+          state.sortDir = (col === 'name' || col === 'dept') ? 'asc' : 'desc';
+        }
+        renderSkuTable();
+      }
+
+      th.addEventListener('click', triggerHeaderSort);
+      th.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          triggerHeaderSort();
+        }
+      });
     });
 
     document.getElementById('repeatOnlyCheckbox').addEventListener('change', (e) => {

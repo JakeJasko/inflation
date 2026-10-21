@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.6.1" />
+  <link rel="stylesheet" href="styles.css?v=2.7.0" />
   <script>
     (function () {
       try {
@@ -353,16 +353,97 @@
             <table class="terminal-table" role="table" aria-label="SKU Price Inflation Table">
               <thead>
                 <tr>
-                  <th scope="col" title="Unique Costco Item Number">Costco SKU</th>
-                  <th scope="col" title="Item name and product line">Product Description</th>
-                  <th scope="col" title="Warehouse merchandise department">Dept</th>
-                  <th scope="col" class="num-col" title="Percentage of your total repeat grocery spend represented by this item">Spend Weight</th>
-                  <th scope="col" class="num-col" title="Total receipts containing this item and total units purchased">Orders</th>
-                  <th scope="col" class="num-col" title="Unit price on your earliest recorded purchase of this item">First Price</th>
-                  <th scope="col" class="num-col" title="Unit price on your most recent purchase of this item">Latest Price</th>
+                  <th scope="col" class="sortable" data-sort="sku" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Costco Item Number">
+                    <div class="th-content">
+                      <span>Costco SKU</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="sortable" data-sort="name" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Product Description">
+                    <div class="th-content">
+                      <span>Product Description</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="sortable" data-sort="dept" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Department">
+                    <div class="th-content">
+                      <span>Dept</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="spend" tabindex="0" role="columnheader" aria-sort="descending" title="Sort by Spend Weight">
+                    <div class="th-content">
+                      <span>Spend Weight</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="orders" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Orders Count">
+                    <div class="th-content">
+                      <span>Orders</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="firstPrice" tabindex="0" role="columnheader" aria-sort="none" title="Sort by First Price">
+                    <div class="th-content">
+                      <span>First Price</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="latestPrice" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Latest Price">
+                    <div class="th-content">
+                      <span>Latest Price</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
                   <th scope="col" title="Visual price trajectory from earliest to latest purchase">Price Trend</th>
-                  <th scope="col" class="num-col" title="Annual dollar impact: (Price Change × Units Purchased ÷ Years Observed)">Added Cost</th>
-                  <th scope="col" class="num-col" title="Total percentage price change from first purchase to latest purchase">Inflation</th>
+                  <th scope="col" class="num-col sortable" data-sort="addedCost" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Added Cost">
+                    <div class="th-content">
+                      <span>Added Cost</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="inflation" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Inflation %">
+                    <div class="th-content">
+                      <span>Inflation</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
                 </tr>
               </thead>
               <tbody id="skuTableBody"></tbody>
@@ -637,6 +718,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.6.1"></script>
+  <script src="app.js?v=2.7.0"></script>
 </body>
 </html>
