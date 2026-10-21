@@ -1055,23 +1055,46 @@
 
   function setupDialog() {
     const dialog = document.getElementById('syncModal');
+    if (!dialog) return;
 
-    if (!('closedBy' in HTMLDialogElement.prototype)) {
-      dialog.addEventListener('click', (event) => {
-        if (event.target !== dialog) return;
-        const rect = dialog.getBoundingClientRect();
-        const isDialogContent =
-          rect.top <= event.clientY &&
-          event.clientY <= rect.top + rect.height &&
-          rect.left <= event.clientX &&
-          event.clientX <= rect.left + rect.width;
-        if (isDialogContent) return;
-        dialog.close();
-      });
+    function openModal(e) {
+      if (e) {
+        e.preventDefault();
+        e.stopPropagation();
+      }
+      try {
+        if (dialog.open) {
+          dialog.close();
+        }
+        dialog.showModal();
+      } catch (err) {
+        dialog.setAttribute('open', '');
+      }
     }
 
-    document.getElementById('openSyncModalBtn').addEventListener('click', () => {
-      dialog.showModal();
+    // Direct element listeners
+    document.getElementById('openSyncModalBtn')?.addEventListener('click', openModal);
+    document.getElementById('emptyStateOpenSyncBtn')?.addEventListener('click', openModal);
+
+    // Global delegated listener for any [data-action="open-connector"]
+    document.addEventListener('click', (e) => {
+      const btn = e.target.closest('#openSyncModalBtn, #emptyStateOpenSyncBtn, [data-action="open-connector"]');
+      if (btn) {
+        openModal(e);
+      }
+    });
+
+    // Close on backdrop click (click on dialog itself, outside .modal-content)
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) {
+        dialog.close();
+      }
+    });
+
+    // Close button inside form
+    dialog.querySelector('.icon-close-btn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      dialog.close();
     });
 
     const tabBtns = dialog.querySelectorAll('.modal-tab');
@@ -1247,8 +1270,15 @@
 
     // Empty state call-to-actions
     const syncModal = document.getElementById('syncModal');
-    document.getElementById('emptyStateOpenSyncBtn')?.addEventListener('click', () => {
-      syncModal.showModal();
+    document.getElementById('emptyStateOpenSyncBtn')?.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      try {
+        if (syncModal.open) syncModal.close();
+        syncModal.showModal();
+      } catch (_) {
+        syncModal.setAttribute('open', '');
+      }
     });
 
     document.getElementById('emptyStateCopyScriptBtn')?.addEventListener('click', (e) => {
