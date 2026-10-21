@@ -1308,6 +1308,53 @@ pre,
   outline: 2px solid var(--border-focus);
 }
 
+.mode-toggle-group {
+  display: inline-flex;
+  align-items: center;
+  background: var(--bg-surface-elevated);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 2px;
+  gap: 2px;
+}
+
+.mode-btn {
+  background: transparent;
+  border: 1px solid transparent;
+  color: var(--text-muted);
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  padding: 0.32rem 0.65rem;
+  border-radius: calc(var(--radius-sm) - 2px);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  line-height: 1.2;
+}
+
+.mode-btn:hover {
+  color: var(--text-primary);
+  background: var(--bg-surface-hover);
+}
+
+.mode-btn.active {
+  background: var(--bg-surface);
+  color: var(--costco-blue);
+  border-color: var(--border-subtle);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] .mode-btn.active {
+  color: var(--fin-cyan);
+  background: rgba(6, 182, 212, 0.12);
+  border-color: rgba(6, 182, 212, 0.35);
+}
+
+.mode-btn:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 1px;
+}
+
 .trajectories-canvas-wrap {
   position: relative;
   width: 100%;
@@ -1352,6 +1399,7 @@ pre,
 .traj-stat-val {
   font-weight: 700;
   font-family: var(--font-mono);
+  font-variant-numeric: tabular-nums;
 }
 
 .trajectories-legend-section {
@@ -1412,6 +1460,11 @@ pre,
   border-color: var(--border-focus);
 }
 
+.traj-legend-chip:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
 .traj-legend-chip.dimmed {
   opacity: 0.35;
   filter: grayscale(0.5);
@@ -1453,6 +1506,42 @@ pre,
   margin-left: 0.25rem;
 }
 
+.traj-chip-solo-btn {
+  opacity: 0;
+  pointer-events: none;
+  font-size: 0.65rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  padding: 0.1rem 0.35rem;
+  border-radius: 3px;
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-surface-elevated);
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: all 0.12s ease;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.traj-legend-chip:hover .traj-chip-solo-btn,
+.traj-legend-chip:focus-within .traj-chip-solo-btn {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.traj-chip-solo-btn:hover {
+  background: var(--costco-blue);
+  color: #ffffff;
+  border-color: var(--costco-blue);
+}
+
+[data-theme="dark"] .traj-chip-solo-btn:hover {
+  background: var(--fin-cyan);
+  color: #0b1120;
+  border-color: var(--fin-cyan);
+}
+
 .traj-chip-right {
   display: flex;
   align-items: center;
@@ -1460,6 +1549,7 @@ pre,
   flex-shrink: 0;
   font-family: var(--font-mono);
   font-size: 0.75rem;
+  font-variant-numeric: tabular-nums;
 }
 
 .traj-chip-price {

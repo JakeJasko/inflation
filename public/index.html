@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.7.6" />
+  <link rel="stylesheet" href="styles.css?v=2.7.7" />
   <script>
     (function () {
       try {
@@ -549,6 +549,7 @@
                   <option value="top_deflation">Top 10 Price Drops (%)</option>
                   <option value="most_frequent">Top 20 Most Frequent Items</option>
                   <option value="all_repeat">All Repeat SKUs (100% Portfolio)</option>
+                  <option value="custom">Custom Selection</option>
                 </select>
               </div>
 
@@ -569,10 +570,10 @@
               </div>
 
               <div class="mode-toggle-group" role="group" aria-label="Chart Metric Mode">
-                <button type="button" class="mode-btn active" id="btnTrajModePct" title="Show % change from initial purchase price">
+                <button type="button" class="mode-btn active" id="btnTrajModePct" aria-pressed="true" title="Show % change from initial purchase price">
                   % Change
                 </button>
-                <button type="button" class="mode-btn" id="btnTrajModePrice" title="Show actual dollar unit price over time">
+                <button type="button" class="mode-btn" id="btnTrajModePrice" aria-pressed="false" title="Show actual dollar unit price over time">
                   Unit Price ($)
                 </button>
               </div>
@@ -580,7 +581,7 @@
           </div>
 
           <div class="trajectories-canvas-wrap">
-            <canvas id="trajectoriesCanvas" height="420"></canvas>
+            <canvas id="trajectoriesCanvas" height="420" role="img" aria-label="Interactive timeline of individual Costco SKU price trajectories"></canvas>
             <div id="trajectoriesTooltip" class="terminal-tooltip" hidden></div>
           </div>
 
@@ -609,9 +610,9 @@
             <div class="trajectories-legend-header">
               <span class="legend-title">Plotted Items <span class="legend-hint">(hover chip to focus line, click to toggle)</span></span>
               <div class="legend-quick-actions">
-                <button type="button" class="btn btn-sm btn-secondary" id="btnTrajShowAll">Select All</button>
-                <button type="button" class="btn btn-sm btn-secondary" id="btnTrajClearAll">Clear All</button>
-                <button type="button" class="btn btn-sm btn-secondary" id="btnTrajResetTop10">Reset Top 10</button>
+                <button type="button" class="btn-terminal-secondary btn-sm" id="btnTrajShowAll">Select All</button>
+                <button type="button" class="btn-terminal-secondary btn-sm" id="btnTrajClearAll">Clear All</button>
+                <button type="button" class="btn-terminal-secondary btn-sm" id="btnTrajResetTop10">Reset Top 10</button>
               </div>
             </div>
             <div id="trajectoriesLegendList" class="trajectories-legend-grid"></div>
@@ -712,7 +713,7 @@
         <span>Personal Costco CPI Analytics</span>
       </div>
       <div class="footer-version-wrap">
-        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.6</span>
+        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.7</span>
       </div>
     </div>
   </footer>
@@ -853,6 +854,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.7.6"></script>
+  <script src="app.js?v=2.7.7"></script>
 </body>
 </html>

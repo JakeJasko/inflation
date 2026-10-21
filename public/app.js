@@ -263,7 +263,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.6';
+  const APP_VERSION = '2.7.7';
   const state = {
     source: 'live',
     receipts: [],
@@ -722,7 +722,7 @@
     populateTrajectoriesDeptSelect(analytics.skuList);
     renderSkuTable();
     if (state.currentView === 'view-trajectories') {
-      renderSkuTrajectoriesChart();
+      renderSkuTrajectoriesChart(true);
     }
     renderMacroCpiChart(analytics.cpiSeries);
     renderDeptBreakdown(analytics.deptBreakdown);
@@ -1404,6 +1404,14 @@
     }
   }
 
+  function syncPresetSelectToCustom() {
+    const presetSelect = document.getElementById('trajPresetSelect');
+    if (presetSelect) {
+      state.trajPreset = 'custom';
+      presetSelect.value = 'custom';
+    }
+  }
+
   function updateTrajectoriesActiveSkusFromPreset(preset) {
     if (!state.analytics || !state.analytics.trackedSkus) return;
     const tracked = state.analytics.trackedSkus;
@@ -1521,7 +1529,18 @@
     });
   }
 
-  function renderSkuTrajectoriesChart() {
+  function updateTrajectoriesLegendHighlight() {
+    const listEl = document.getElementById('trajectoriesLegendList');
+    if (!listEl) return;
+    const chips = listEl.querySelectorAll('.traj-legend-chip');
+    chips.forEach((chip) => {
+      const sku = chip.getAttribute('data-sku');
+      const isHovered = sku === state.trajHoveredSku;
+      chip.classList.toggle('active-highlight', isHovered);
+    });
+  }
+
+  function renderSkuTrajectoriesChart(updateLegendDom = false) {
     const canvas = document.getElementById('trajectoriesCanvas');
     if (!canvas || !state.analytics) return;
 
@@ -1567,7 +1586,11 @@
       if (avgEl) avgEl.textContent = '--';
     }
 
-    renderTrajectoriesLegend(candidates, skuColorMap);
+    if (updateLegendDom) {
+      renderTrajectoriesLegend(candidates, skuColorMap);
+    } else {
+      updateTrajectoriesLegendHighlight();
+    }
 
     const dpr = window.devicePixelRatio || 1;
     const rect = canvas.parentElement.getBoundingClientRect();
@@ -1580,13 +1603,14 @@
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     const pad = { top: 24, right: 35, bottom: 42, left: 58 };
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
 
     if (plotted.length === 0) {
       ctx.font = '14px "IBM Plex Sans", sans-serif';
-      ctx.fillStyle = '#94a3b8';
+      ctx.fillStyle = isDark ? '#94a3b8' : '#475569';
       ctx.textAlign = 'center';
       ctx.fillText('No SKUs selected. Choose a preset above or click SKUs below to plot.', width / 2, height / 2);
       state.trajDataPoints = [];
@@ -1629,7 +1653,14 @@
       yMin = Math.floor(Math.min(minYVal - 4, -5) / 10) * 10;
       yMax = Math.ceil(Math.max(maxYVal + 4, 10) / 10) * 10;
     } else {
-      yMin = 0;
+      // Dynamic baseline adaptation: elevate everyday staples so price changes aren't squashed
+      if (minYVal > 5 && maxYVal / Math.max(minYVal, 1) > 4) {
+        yMin = Math.floor((minYVal * 0.85) / 5) * 5;
+      } else if (minYVal >= 2) {
+        yMin = Math.max(0, Math.floor(minYVal - 1));
+      } else {
+        yMin = 0;
+      }
       yMax = Math.ceil((maxYVal * 1.1) / 5) * 5 || 10;
     }
     const ySpan = yMax - yMin || 1;
@@ -1637,9 +1668,8 @@
     const xFor = (ts) => pad.left + ((ts - minTs) / timeSpan) * plotW;
     const yFor = (val) => pad.top + plotH - ((val - yMin) / ySpan) * plotH;
 
-    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
     const gridColor = isDark ? 'rgba(148, 163, 184, 0.12)' : '#e2e8f0';
-    const textColor = isDark ? '#94a3b8' : '#64748b';
+    const textColor = isDark ? '#94a3b8' : '#475569';
 
     const ySteps = 5;
     ctx.font = '11px "JetBrains Mono", monospace';
@@ -1664,7 +1694,7 @@
     if (state.trajMode === 'pct' && yMin <= 0 && yMax >= 0) {
       const zeroY = yFor(0);
       ctx.save();
-      ctx.strokeStyle = isDark ? 'rgba(148, 163, 184, 0.45)' : '#94a3b8';
+      ctx.strokeStyle = isDark ? 'rgba(148, 163, 184, 0.45)' : '#475569';
       ctx.lineWidth = 1.5;
       ctx.setLineDash([4, 4]);
       ctx.beginPath();
@@ -1692,7 +1722,7 @@
     // Hover vertical crosshair
     if (state.trajHoveredPoint) {
       ctx.save();
-      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.2)';
+      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.25)';
       ctx.lineWidth = 1;
       ctx.setLineDash([3, 3]);
       ctx.beginPath();
@@ -1749,9 +1779,8 @@
         ctx.lineWidth = 1.2;
       } else if (isHovered) {
         ctx.globalAlpha = 1.0;
-        ctx.lineWidth = 3.6;
-        ctx.shadowColor = color;
-        ctx.shadowBlur = 8;
+        ctx.lineWidth = 3.5;
+        // Zero AI-glow: clean high-contrast line without canvas shadow blur
       } else {
         ctx.globalAlpha = plotted.length > 20 ? 0.45 : 0.85;
         ctx.lineWidth = plotted.length > 20 ? 1.5 : 2.2;
@@ -1780,14 +1809,14 @@
       }
     });
 
-    // Highlight hovered point with luminous ring
+    // Highlight hovered point with crisp reticle
     if (state.trajHoveredPoint) {
       ctx.save();
       ctx.beginPath();
       ctx.arc(state.trajHoveredPoint.x, state.trajHoveredPoint.y, 6.5, 0, Math.PI * 2);
       ctx.fillStyle = '#ffffff';
       ctx.fill();
-      ctx.lineWidth = 3;
+      ctx.lineWidth = 2.5;
       ctx.strokeStyle = state.trajHoveredPoint.color || '#2563eb';
       ctx.stroke();
       ctx.restore();
@@ -1814,6 +1843,7 @@
 
       const chip = document.createElement('div');
       chip.className = `traj-legend-chip ${isActive ? '' : 'dimmed'} ${isHovered ? 'active-highlight' : ''}`;
+      chip.setAttribute('data-sku', item.itemNumber);
       chip.setAttribute('tabindex', '0');
       chip.setAttribute('role', 'button');
       chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
@@ -1831,13 +1861,25 @@
         <div class="traj-chip-right">
           <span class="traj-chip-price">${formatCurrency(item.latestPrice)}</span>
           <span class="traj-chip-badge ${pillClass}">${formatPct(item.pctChange, 1)}</span>
+          <button type="button" class="traj-chip-solo-btn" title="Solo this SKU (hide others)" aria-label="Solo this SKU">Solo</button>
         </div>
       `;
+
+      // Solo button action
+      const soloBtn = chip.querySelector('.traj-chip-solo-btn');
+      if (soloBtn) {
+        soloBtn.addEventListener('click', (e) => {
+          e.stopPropagation();
+          state.trajActiveSkus = new Set([item.itemNumber]);
+          syncPresetSelectToCustom();
+          renderSkuTrajectoriesChart(true);
+        });
+      }
 
       chip.addEventListener('mouseenter', () => {
         if (isActive) {
           state.trajHoveredSku = item.itemNumber;
-          renderSkuTrajectoriesChart();
+          renderSkuTrajectoriesChart(false);
         }
       });
 
@@ -1845,19 +1887,41 @@
         if (state.trajHoveredSku === item.itemNumber) {
           state.trajHoveredSku = null;
           state.trajHoveredPoint = null;
-          renderSkuTrajectoriesChart();
+          renderSkuTrajectoriesChart(false);
+        }
+      });
+
+      chip.addEventListener('focus', () => {
+        if (isActive) {
+          state.trajHoveredSku = item.itemNumber;
+          renderSkuTrajectoriesChart(false);
+        }
+      });
+
+      chip.addEventListener('blur', () => {
+        if (state.trajHoveredSku === item.itemNumber) {
+          state.trajHoveredSku = null;
+          state.trajHoveredPoint = null;
+          renderSkuTrajectoriesChart(false);
         }
       });
 
       chip.addEventListener('click', (e) => {
         e.stopPropagation();
+        if (e.altKey) {
+          state.trajActiveSkus = new Set([item.itemNumber]);
+          syncPresetSelectToCustom();
+          renderSkuTrajectoriesChart(true);
+          return;
+        }
         if (!state.trajActiveSkus) state.trajActiveSkus = new Set();
         if (state.trajActiveSkus.has(item.itemNumber)) {
           state.trajActiveSkus.delete(item.itemNumber);
         } else {
           state.trajActiveSkus.add(item.itemNumber);
         }
-        renderSkuTrajectoriesChart();
+        syncPresetSelectToCustom();
+        renderSkuTrajectoriesChart(true);
       });
 
       chip.addEventListener('keydown', (e) => {
@@ -1874,32 +1938,42 @@
   function setupTrajectoriesInteractions() {
     document.getElementById('trajPresetSelect')?.addEventListener('change', (e) => {
       state.trajPreset = e.target.value;
-      updateTrajectoriesActiveSkusFromPreset(e.target.value);
-      renderSkuTrajectoriesChart();
+      if (e.target.value !== 'custom') {
+        updateTrajectoriesActiveSkusFromPreset(e.target.value);
+      }
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('trajDeptSelect')?.addEventListener('change', (e) => {
       state.trajDept = e.target.value;
-      renderSkuTrajectoriesChart();
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('trajSearchInput')?.addEventListener('input', (e) => {
       state.trajQuery = e.target.value;
-      renderSkuTrajectoriesChart();
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('btnTrajModePct')?.addEventListener('click', () => {
       state.trajMode = 'pct';
-      document.getElementById('btnTrajModePct')?.classList.add('active');
-      document.getElementById('btnTrajModePrice')?.classList.remove('active');
-      renderSkuTrajectoriesChart();
+      const btnPct = document.getElementById('btnTrajModePct');
+      const btnPrice = document.getElementById('btnTrajModePrice');
+      btnPct?.classList.add('active');
+      btnPct?.setAttribute('aria-pressed', 'true');
+      btnPrice?.classList.remove('active');
+      btnPrice?.setAttribute('aria-pressed', 'false');
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('btnTrajModePrice')?.addEventListener('click', () => {
       state.trajMode = 'price';
-      document.getElementById('btnTrajModePrice')?.classList.add('active');
-      document.getElementById('btnTrajModePct')?.classList.remove('active');
-      renderSkuTrajectoriesChart();
+      const btnPrice = document.getElementById('btnTrajModePrice');
+      const btnPct = document.getElementById('btnTrajModePct');
+      btnPrice?.classList.add('active');
+      btnPrice?.setAttribute('aria-pressed', 'true');
+      btnPct?.classList.remove('active');
+      btnPct?.setAttribute('aria-pressed', 'false');
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('btnTrajShowAll')?.addEventListener('click', () => {
@@ -1907,12 +1981,13 @@
       const presetSelect = document.getElementById('trajPresetSelect');
       if (presetSelect) presetSelect.value = 'all_repeat';
       updateTrajectoriesActiveSkusFromPreset('all_repeat');
-      renderSkuTrajectoriesChart();
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('btnTrajClearAll')?.addEventListener('click', () => {
       state.trajActiveSkus = new Set();
-      renderSkuTrajectoriesChart();
+      syncPresetSelectToCustom();
+      renderSkuTrajectoriesChart(true);
     });
 
     document.getElementById('btnTrajResetTop10')?.addEventListener('click', () => {
@@ -1920,7 +1995,7 @@
       const presetSelect = document.getElementById('trajPresetSelect');
       if (presetSelect) presetSelect.value = 'top_spend';
       updateTrajectoriesActiveSkusFromPreset('top_spend');
-      renderSkuTrajectoriesChart();
+      renderSkuTrajectoriesChart(true);
     });
 
     const canvas = document.getElementById('trajectoriesCanvas');
@@ -1950,7 +2025,7 @@
           if (skuChanged || ptChanged) {
             state.trajHoveredSku = closest.sku;
             state.trajHoveredPoint = closest;
-            renderSkuTrajectoriesChart();
+            renderSkuTrajectoriesChart(false);
           }
 
           tooltip.hidden = false;
@@ -1980,7 +2055,7 @@
           if (state.trajHoveredSku !== null || state.trajHoveredPoint !== null) {
             state.trajHoveredSku = null;
             state.trajHoveredPoint = null;
-            renderSkuTrajectoriesChart();
+            renderSkuTrajectoriesChart(false);
           }
           tooltip.hidden = true;
         }
@@ -1990,7 +2065,7 @@
         if (state.trajHoveredSku !== null || state.trajHoveredPoint !== null) {
           state.trajHoveredSku = null;
           state.trajHoveredPoint = null;
-          renderSkuTrajectoriesChart();
+          renderSkuTrajectoriesChart(false);
         }
         tooltip.hidden = true;
       });
@@ -2052,7 +2127,7 @@
         });
 
         if (viewId === 'view-trajectories' && state.analytics) {
-          setTimeout(() => renderSkuTrajectoriesChart(), 50);
+          setTimeout(() => renderSkuTrajectoriesChart(true), 50);
         }
         if (viewId === 'view-macro' && state.analytics) {
           setTimeout(() => renderMacroCpiChart(state.analytics.cpiSeries), 50);
@@ -2781,7 +2856,7 @@
           renderMacroCpiChart(state.analytics.cpiSeries);
         }
         if (state.currentView === 'view-trajectories') {
-          renderSkuTrajectoriesChart();
+          renderSkuTrajectoriesChart(false);
         }
         const activeItem = state.analytics.skuList.find((s) => s.itemNumber === state.selectedSku);
         if (activeItem) renderItemDetailChart(activeItem);
