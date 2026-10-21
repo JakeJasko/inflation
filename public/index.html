@@ -3,11 +3,11 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pinflation Terminal — Personal Costco Inflation &amp; Capital Planning</title>
+  <title>My Price Inflation (MPI) — Personal Costco CPI &amp; Capital Planning</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.2.0" />
+  <link rel="stylesheet" href="styles.css?v=2.3.0" />
   <script>
     (function () {
       try {
@@ -26,10 +26,14 @@
   <header class="terminal-header">
     <div class="terminal-header-inner">
       <div class="header-brand-group">
-        <div class="brand-monogram" aria-hidden="true">PI</div>
+        <div class="brand-monogram" aria-hidden="true" title="My Price Inflation (MPI)">MPI</div>
         <div>
           <div class="brand-title-wrap">
-            <h1 class="brand-title">PINFLATION TERMINAL</h1>
+            <h1 class="brand-title" aria-label="My Price Inflation">
+              <del class="brand-strike">CONSUMER</del>
+              <span class="brand-correction">MY</span>
+              <span class="brand-suffix">PRICE INFLATION</span>
+            </h1>
             <span class="institutional-badge">INSTITUTIONAL GRADE</span>
             <span class="costco-badge" id="headerWarehouseBadge">COSTCO WHOLESALE</span>
           </div>
@@ -556,6 +560,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.2.0"></script>
+  <script src="app.js?v=2.3.0"></script>
 </body>
 </html>

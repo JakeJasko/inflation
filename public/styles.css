@@ -145,9 +145,36 @@ pre,
 
 .brand-title {
   margin: 0;
-  font-size: 1.25rem;
+  font-size: 1.1875rem;
   font-weight: 700;
   letter-spacing: -0.01em;
+  color: var(--text-primary);
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.38rem;
+  flex-wrap: wrap;
+}
+
+.brand-strike {
+  color: var(--text-muted);
+  text-decoration: line-through;
+  text-decoration-color: var(--fin-crimson);
+  text-decoration-thickness: 2.5px;
+  font-weight: 600;
+  opacity: 0.82;
+}
+
+.brand-correction {
+  color: var(--costco-blue);
+  font-weight: 800;
+  letter-spacing: 0.02em;
+}
+[data-theme="dark"] .brand-correction {
+  color: var(--fin-cyan);
+}
+
+.brand-suffix {
+  font-weight: 700;
   color: var(--text-primary);
 }
 
@@ -1499,5 +1526,23 @@ dialog::backdrop {
   }
   .empty-steps-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+/* Accessibility: Keyboard focus outlines & reduced motion */
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  outline: 2px solid var(--border-focus);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
   }
 }
