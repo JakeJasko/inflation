@@ -741,13 +741,19 @@
     }
 
     // X-axis labels
-    ctx.textAlign = 'center';
     const stride = Math.max(Math.floor(series.length / 8), 1);
     for (let i = 0; i < series.length; i += stride) {
       const x = xFor(i);
       const d = new Date(series[i].date);
       const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
       ctx.fillStyle = textColor;
+      if (i === 0) {
+        ctx.textAlign = 'left';
+      } else if (i + stride >= series.length) {
+        ctx.textAlign = 'right';
+      } else {
+        ctx.textAlign = 'center';
+      }
       ctx.fillText(label, x, height - 12);
     }
 
@@ -794,7 +800,7 @@
     ctx.scale(dpr, dpr);
     ctx.clearRect(0, 0, width, height);
 
-    const pad = { top: 16, right: 16, bottom: 26, left: 46 };
+    const pad = { top: 16, right: 20, bottom: 26, left: 46 };
     const plotW = width - pad.left - pad.right;
     const plotH = height - pad.top - pad.bottom;
 
@@ -853,12 +859,18 @@
     ctx.restore();
 
     // Dates
-    ctx.textAlign = 'center';
     hist.forEach((h, idx) => {
       if (idx === 0 || idx === hist.length - 1 || hist.length <= 4) {
         const x = xFor(idx);
         const d = new Date(h.date);
         ctx.fillStyle = isDark ? '#cbd5e1' : '#334155';
+        if (idx === 0) {
+          ctx.textAlign = 'left';
+        } else if (idx === hist.length - 1) {
+          ctx.textAlign = 'right';
+        } else {
+          ctx.textAlign = 'center';
+        }
         ctx.fillText(
           d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' }),
           x,
