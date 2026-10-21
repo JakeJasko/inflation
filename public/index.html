@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:ital,wght@0,400;0,500;0,600;0,700;1,400;1,600&amp;family=JetBrains+Mono:wght@400;500;600;700&amp;display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css?v=2.7.2" />
+  <link rel="stylesheet" href="styles.css?v=2.7.3" />
   <script>
     (function () {
       try {
@@ -338,6 +338,7 @@
               <select id="sortFilterSelect" aria-label="Sort Order">
                 <option value="spend_desc">Highest Portfolio Spend ($)</option>
                 <option value="pct_desc">Highest Inflation Rate (%)</option>
+                <option value="cagr_desc">Highest Annualized CAGR (%/yr)</option>
                 <option value="abs_desc">Highest Dollar Jump ($)</option>
                 <option value="pct_asc">Deflation / Price Drops (%)</option>
                 <option value="count_desc">Most Frequently Purchased</option>
@@ -434,9 +435,19 @@
                       </span>
                     </div>
                   </th>
-                  <th scope="col" class="num-col sortable" data-sort="inflation" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Inflation %">
+                  <th scope="col" class="num-col sortable" data-sort="inflation" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Cumulative Inflation % (Total Price Change from First to Latest Purchase)">
                     <div class="th-content">
                       <span>Inflation</span>
+                      <span class="sort-icon" aria-hidden="true">
+                        <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
+                        <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
+                        <svg class="icon-sort-desc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+                      </span>
+                    </div>
+                  </th>
+                  <th scope="col" class="num-col sortable" data-sort="cagr" tabindex="0" role="columnheader" aria-sort="none" title="Sort by Compound Annual Growth Rate (Annualized Inflation / Year)">
+                    <div class="th-content">
+                      <span>CAGR (YoY)</span>
                       <span class="sort-icon" aria-hidden="true">
                         <svg class="icon-sort-none" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m7 15 5 5 5-5"/><path d="m7 9 5-5 5 5"/></svg>
                         <svg class="icon-sort-asc" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m18 15-6-6-6 6"/></svg>
@@ -608,7 +619,7 @@
         <span>Personal Costco CPI Analytics</span>
       </div>
       <div class="footer-version-wrap">
-        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.2</span>
+        <span class="footer-version-badge" id="footerAppVersion" title="My Price Inflation Engine">v2.7.3</span>
       </div>
     </div>
   </footer>
@@ -749,6 +760,6 @@
     </div>
   </dialog>
 
-  <script src="app.js?v=2.7.2"></script>
+  <script src="app.js?v=2.7.3"></script>
 </body>
 </html>

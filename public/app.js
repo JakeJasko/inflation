@@ -256,7 +256,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.2';
+  const APP_VERSION = '2.7.3';
   const state = {
     source: 'live',
     receipts: [],
@@ -752,6 +752,7 @@
     if (sortSelect) {
       if (state.sortCol === 'spend' && state.sortDir === 'desc') sortSelect.value = 'spend_desc';
       else if (state.sortCol === 'inflation' && state.sortDir === 'desc') sortSelect.value = 'pct_desc';
+      else if (state.sortCol === 'cagr' && state.sortDir === 'desc') sortSelect.value = 'cagr_desc';
       else if (state.sortCol === 'inflation' && state.sortDir === 'asc') sortSelect.value = 'pct_asc';
       else if (state.sortCol === 'addedCost' && state.sortDir === 'desc') sortSelect.value = 'abs_desc';
       else if (state.sortCol === 'orders' && state.sortDir === 'desc') sortSelect.value = 'count_desc';
@@ -809,6 +810,9 @@
         case 'inflation':
           res = a.pctChange - b.pctChange;
           break;
+        case 'cagr':
+          res = a.annualizedPct - b.annualizedPct;
+          break;
         default:
           res = a.totalSpend - b.totalSpend;
       }
@@ -825,6 +829,12 @@
     }
 
     tbody.innerHTML = '';
+
+    if (filtered.length === 0) {
+      tbody.innerHTML = '<tr><td colspan="11" style="text-align:center;padding:2.5rem 1rem;color:var(--text-muted);font-style:italic">No items match your filter criteria</td></tr>';
+      return;
+    }
+
     for (const item of filtered) {
       const info = resolveItemDisplay(item);
       const tr = document.createElement('tr');
@@ -835,6 +845,13 @@
 
       const pillClass =
         Math.abs(item.pctChange) < 0.05 ? 'flat' : item.pctChange > 0 ? 'up' : 'down';
+      const cagrClass =
+        Math.abs(item.annualizedPct) < 0.05 ? 'flat' : item.annualizedPct > 0 ? 'up' : 'down';
+
+      const cagrCellHtml =
+        item.purchaseCount < 2
+          ? '<span style="color:var(--text-muted)">&ndash;</span>'
+          : `<span class="inflation-cell-badge ${cagrClass}" title="Compound Annual Growth Rate: ${formatPct(item.annualizedPct, 1)}/year">${formatPct(item.annualizedPct, 1)}/yr</span>`;
 
       const badgeHtml =
         info.nameSource === 'verified'
@@ -872,7 +889,10 @@
           ${formatSignedCurrency(item.absChange)}
         </td>
         <td class="num-col">
-          <span class="inflation-cell-badge ${pillClass}">${formatPct(item.pctChange, 1)}</span>
+          <span class="inflation-cell-badge ${pillClass}" title="Cumulative inflation: ${formatPct(item.pctChange, 1)}">${formatPct(item.pctChange, 1)}</span>
+        </td>
+        <td class="num-col">
+          ${cagrCellHtml}
         </td>
       `;
 
@@ -2048,6 +2068,7 @@
       const val = e.target.value;
       if (val === 'spend_desc') { state.sortCol = 'spend'; state.sortDir = 'desc'; }
       else if (val === 'pct_desc') { state.sortCol = 'inflation'; state.sortDir = 'desc'; }
+      else if (val === 'cagr_desc') { state.sortCol = 'cagr'; state.sortDir = 'desc'; }
       else if (val === 'abs_desc') { state.sortCol = 'addedCost'; state.sortDir = 'desc'; }
       else if (val === 'pct_asc') { state.sortCol = 'inflation'; state.sortDir = 'asc'; }
       else if (val === 'count_desc') { state.sortCol = 'orders'; state.sortDir = 'desc'; }

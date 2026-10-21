@@ -778,6 +778,7 @@ pre,
 .terminal-table th.num-col,
 .terminal-table td.num-col {
   text-align: right;
+  white-space: nowrap;
 }
 
 .terminal-table th.sortable {
@@ -800,6 +801,7 @@ pre,
   display: inline-flex;
   align-items: center;
   gap: 0.35rem;
+  white-space: nowrap;
 }
 
 .sort-icon {
