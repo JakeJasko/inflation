@@ -263,7 +263,7 @@
   }
 
   // Application Version & State
-  const APP_VERSION = '2.7.5';
+  const APP_VERSION = '2.7.6';
   const state = {
     source: 'live',
     receipts: [],
@@ -278,7 +278,16 @@
     receiptQuery: '',
     exportScriptText: '',
     analytics: null,
-    chartPoints: []
+    chartPoints: [],
+    // SKU Price Trends Explorer State
+    trajMode: 'pct', // 'pct' | 'price'
+    trajPreset: 'top_spend',
+    trajDept: 'all',
+    trajQuery: '',
+    trajActiveSkus: null,
+    trajHoveredSku: null,
+    trajHoveredPoint: null,
+    trajDataPoints: []
   };
 
   /**
@@ -710,7 +719,11 @@
     document.getElementById('scenSavingsBuffer').textContent = `-${formatCurrency(annualPromoBuffer)}/yr buffer`;
 
     populateDeptSelect(analytics.skuList);
+    populateTrajectoriesDeptSelect(analytics.skuList);
     renderSkuTable();
+    if (state.currentView === 'view-trajectories') {
+      renderSkuTrajectoriesChart();
+    }
     renderMacroCpiChart(analytics.cpiSeries);
     renderDeptBreakdown(analytics.deptBreakdown);
     renderReceiptsLedger();
@@ -1369,6 +1382,621 @@
     });
   }
 
+  const TRAJECTORY_COLORS = [
+    '#f43f5e', '#0ea5e9', '#10b981', '#f59e0b', '#8b5cf6',
+    '#ec4899', '#06b6d4', '#14b8a6', '#f97316', '#a855f7',
+    '#84cc16', '#3b82f6', '#e11d48', '#22c55e', '#eab308',
+    '#6366f1', '#d946ef', '#0284c7', '#059669', '#d97706'
+  ];
+
+  function populateTrajectoriesDeptSelect(skuList) {
+    const select = document.getElementById('trajDeptSelect');
+    if (!select) return;
+    const current = state.trajDept;
+    const depts = Array.from(new Set(skuList.map((s) => s.deptName))).sort();
+    select.innerHTML = '<option value="all">All Departments</option>';
+    for (const d of depts) {
+      const opt = document.createElement('option');
+      opt.value = d;
+      opt.textContent = d;
+      if (d === current) opt.selected = true;
+      select.appendChild(opt);
+    }
+  }
+
+  function updateTrajectoriesActiveSkusFromPreset(preset) {
+    if (!state.analytics || !state.analytics.trackedSkus) return;
+    const tracked = state.analytics.trackedSkus;
+    state.trajActiveSkus = new Set();
+
+    if (preset === 'top_spend') {
+      [...tracked]
+        .sort((a, b) => b.totalSpend - a.totalSpend)
+        .slice(0, 10)
+        .forEach((s) => state.trajActiveSkus.add(s.itemNumber));
+    } else if (preset === 'top_inflation') {
+      [...tracked]
+        .sort((a, b) => b.pctChange - a.pctChange)
+        .slice(0, 10)
+        .forEach((s) => state.trajActiveSkus.add(s.itemNumber));
+    } else if (preset === 'top_deflation') {
+      [...tracked]
+        .sort((a, b) => a.pctChange - b.pctChange)
+        .slice(0, 10)
+        .forEach((s) => state.trajActiveSkus.add(s.itemNumber));
+    } else if (preset === 'most_frequent') {
+      [...tracked]
+        .sort((a, b) => (b.purchaseCount - a.purchaseCount) || (b.totalUnits - a.totalUnits))
+        .slice(0, 20)
+        .forEach((s) => state.trajActiveSkus.add(s.itemNumber));
+    } else if (preset === 'all_repeat') {
+      tracked.forEach((s) => state.trajActiveSkus.add(s.itemNumber));
+    }
+  }
+
+  function getTrajectoryCandidateSkus() {
+    if (!state.analytics || !state.analytics.trackedSkus) return [];
+    if (state.trajActiveSkus === null) {
+      updateTrajectoriesActiveSkusFromPreset(state.trajPreset);
+    }
+    const q = state.trajQuery.toLowerCase().trim();
+    const tracked = state.analytics.trackedSkus;
+
+    let filtered = tracked.filter((item) => {
+      if (state.trajDept !== 'all' && item.deptName !== state.trajDept) return false;
+      if (q) {
+        const info = resolveItemDisplay(item);
+        const hay = `${item.itemNumber} ${item.name} ${info.primaryName} ${item.deptName}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+
+    if (!q) {
+      if (state.trajPreset === 'top_spend') {
+        const topSet = new Set(
+          [...filtered]
+            .sort((a, b) => b.totalSpend - a.totalSpend)
+            .slice(0, 15)
+            .map((s) => s.itemNumber)
+        );
+        filtered = filtered.filter(
+          (s) => (state.trajActiveSkus && state.trajActiveSkus.has(s.itemNumber)) || topSet.has(s.itemNumber)
+        );
+        filtered.sort((a, b) => b.totalSpend - a.totalSpend);
+      } else if (state.trajPreset === 'top_inflation') {
+        const topSet = new Set(
+          [...filtered]
+            .sort((a, b) => b.pctChange - a.pctChange)
+            .slice(0, 15)
+            .map((s) => s.itemNumber)
+        );
+        filtered = filtered.filter(
+          (s) => (state.trajActiveSkus && state.trajActiveSkus.has(s.itemNumber)) || topSet.has(s.itemNumber)
+        );
+        filtered.sort((a, b) => b.pctChange - a.pctChange);
+      } else if (state.trajPreset === 'top_deflation') {
+        const topSet = new Set(
+          [...filtered]
+            .sort((a, b) => a.pctChange - b.pctChange)
+            .slice(0, 15)
+            .map((s) => s.itemNumber)
+        );
+        filtered = filtered.filter(
+          (s) => (state.trajActiveSkus && state.trajActiveSkus.has(s.itemNumber)) || topSet.has(s.itemNumber)
+        );
+        filtered.sort((a, b) => a.pctChange - b.pctChange);
+      } else if (state.trajPreset === 'most_frequent') {
+        const topSet = new Set(
+          [...filtered]
+            .sort((a, b) => (b.purchaseCount - a.purchaseCount) || (b.totalUnits - a.totalUnits))
+            .slice(0, 20)
+            .map((s) => s.itemNumber)
+        );
+        filtered = filtered.filter(
+          (s) => (state.trajActiveSkus && state.trajActiveSkus.has(s.itemNumber)) || topSet.has(s.itemNumber)
+        );
+        filtered.sort((a, b) => (b.purchaseCount - a.purchaseCount) || (b.totalUnits - a.totalUnits));
+      }
+    }
+    return filtered;
+  }
+
+  function getPlottedTrajectorySkus() {
+    if (!state.analytics || !state.analytics.trackedSkus) return [];
+    if (state.trajActiveSkus === null) {
+      updateTrajectoriesActiveSkusFromPreset(state.trajPreset);
+    }
+
+    const q = state.trajQuery.toLowerCase().trim();
+    return state.analytics.trackedSkus.filter((item) => {
+      if (!state.trajActiveSkus.has(item.itemNumber)) return false;
+      if (state.trajDept !== 'all' && item.deptName !== state.trajDept) return false;
+      if (q) {
+        const info = resolveItemDisplay(item);
+        const hay = `${item.itemNumber} ${item.name} ${info.primaryName} ${item.deptName}`.toLowerCase();
+        if (!hay.includes(q)) return false;
+      }
+      return true;
+    });
+  }
+
+  function renderSkuTrajectoriesChart() {
+    const canvas = document.getElementById('trajectoriesCanvas');
+    if (!canvas || !state.analytics) return;
+
+    const plotted = getPlottedTrajectorySkus();
+    const candidates = getTrajectoryCandidateSkus();
+
+    const skuColorMap = new Map();
+    plotted.forEach((item, idx) => {
+      skuColorMap.set(item.itemNumber, TRAJECTORY_COLORS[idx % TRAJECTORY_COLORS.length]);
+    });
+
+    // Summary stats
+    const countEl = document.getElementById('trajStatCount');
+    if (countEl) countEl.textContent = `${plotted.length} SKUs`;
+
+    const topMoverEl = document.getElementById('trajStatTopMover');
+    const topDropEl = document.getElementById('trajStatTopDrop');
+    const avgEl = document.getElementById('trajStatAvg');
+
+    if (plotted.length > 0) {
+      const sortedByPct = [...plotted].sort((a, b) => b.pctChange - a.pctChange);
+      const topMover = sortedByPct[0];
+      const topDrop = sortedByPct[sortedByPct.length - 1];
+      const avgPct = plotted.reduce((acc, s) => acc + s.pctChange, 0) / plotted.length;
+
+      if (topMoverEl) {
+        const mInfo = resolveItemDisplay(topMover);
+        topMoverEl.textContent = `${mInfo.primaryName.slice(0, 18)}... (${formatPct(topMover.pctChange, 1)})`;
+        topMoverEl.title = `${mInfo.primaryName}: ${formatPct(topMover.pctChange, 1)}`;
+      }
+      if (topDropEl) {
+        const dInfo = resolveItemDisplay(topDrop);
+        topDropEl.textContent = `${dInfo.primaryName.slice(0, 18)}... (${formatPct(topDrop.pctChange, 1)})`;
+        topDropEl.title = `${dInfo.primaryName}: ${formatPct(topDrop.pctChange, 1)}`;
+      }
+      if (avgEl) {
+        avgEl.textContent = formatPct(avgPct, 1);
+        avgEl.className = `traj-stat-val ${avgPct > 0 ? 'text-crimson' : avgPct < 0 ? 'text-emerald' : ''}`;
+      }
+    } else {
+      if (topMoverEl) topMoverEl.textContent = '--';
+      if (topDropEl) topDropEl.textContent = '--';
+      if (avgEl) avgEl.textContent = '--';
+    }
+
+    renderTrajectoriesLegend(candidates, skuColorMap);
+
+    const dpr = window.devicePixelRatio || 1;
+    const rect = canvas.parentElement.getBoundingClientRect();
+    const width = Math.max(rect.width, 320);
+    const height = 420;
+    canvas.width = width * dpr;
+    canvas.height = height * dpr;
+
+    const ctx = canvas.getContext('2d');
+    ctx.scale(dpr, dpr);
+    ctx.clearRect(0, 0, width, height);
+
+    const pad = { top: 24, right: 35, bottom: 42, left: 58 };
+    const plotW = width - pad.left - pad.right;
+    const plotH = height - pad.top - pad.bottom;
+
+    if (plotted.length === 0) {
+      ctx.font = '14px "IBM Plex Sans", sans-serif';
+      ctx.fillStyle = '#94a3b8';
+      ctx.textAlign = 'center';
+      ctx.fillText('No SKUs selected. Choose a preset above or click SKUs below to plot.', width / 2, height / 2);
+      state.trajDataPoints = [];
+      return;
+    }
+
+    let minTs = Infinity;
+    let maxTs = -Infinity;
+    for (const item of plotted) {
+      for (const h of item.history) {
+        if (h.timestamp < minTs) minTs = h.timestamp;
+        if (h.timestamp > maxTs) maxTs = h.timestamp;
+      }
+    }
+    if (minTs === Infinity || maxTs === -Infinity || minTs === maxTs) {
+      minTs = Date.now() - 365 * 24 * 3600 * 1000;
+      maxTs = Date.now();
+    }
+    const timeSpan = maxTs - minTs || 1;
+
+    let minYVal = Infinity;
+    let maxYVal = -Infinity;
+
+    for (const item of plotted) {
+      const basePrice = item.history[0]?.activePrice || 1;
+      for (const h of item.history) {
+        let v = 0;
+        if (state.trajMode === 'pct') {
+          v = basePrice > 0 ? ((h.activePrice - basePrice) / basePrice) * 100 : 0;
+        } else {
+          v = h.activePrice;
+        }
+        if (v < minYVal) minYVal = v;
+        if (v > maxYVal) maxYVal = v;
+      }
+    }
+
+    let yMin, yMax;
+    if (state.trajMode === 'pct') {
+      yMin = Math.floor(Math.min(minYVal - 4, -5) / 10) * 10;
+      yMax = Math.ceil(Math.max(maxYVal + 4, 10) / 10) * 10;
+    } else {
+      yMin = 0;
+      yMax = Math.ceil((maxYVal * 1.1) / 5) * 5 || 10;
+    }
+    const ySpan = yMax - yMin || 1;
+
+    const xFor = (ts) => pad.left + ((ts - minTs) / timeSpan) * plotW;
+    const yFor = (val) => pad.top + plotH - ((val - yMin) / ySpan) * plotH;
+
+    const isDark = document.documentElement.getAttribute('data-theme') !== 'light';
+    const gridColor = isDark ? 'rgba(148, 163, 184, 0.12)' : '#e2e8f0';
+    const textColor = isDark ? '#94a3b8' : '#64748b';
+
+    const ySteps = 5;
+    ctx.font = '11px "JetBrains Mono", monospace';
+    ctx.fillStyle = textColor;
+    ctx.textAlign = 'right';
+
+    for (let i = 0; i <= ySteps; i++) {
+      const val = yMin + (ySpan * i) / ySteps;
+      const y = yFor(val);
+
+      ctx.strokeStyle = gridColor;
+      ctx.lineWidth = 1;
+      ctx.beginPath();
+      ctx.moveTo(pad.left, y);
+      ctx.lineTo(width - pad.right, y);
+      ctx.stroke();
+
+      const label = state.trajMode === 'pct' ? formatPct(val, 0) : formatCurrency(val);
+      ctx.fillText(label, pad.left - 8, y + 4);
+    }
+
+    if (state.trajMode === 'pct' && yMin <= 0 && yMax >= 0) {
+      const zeroY = yFor(0);
+      ctx.save();
+      ctx.strokeStyle = isDark ? 'rgba(148, 163, 184, 0.45)' : '#94a3b8';
+      ctx.lineWidth = 1.5;
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath();
+      ctx.moveTo(pad.left, zeroY);
+      ctx.lineTo(width - pad.right, zeroY);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const tickIntervals = 6;
+    ctx.fillStyle = textColor;
+    for (let i = 0; i <= tickIntervals; i++) {
+      const ts = minTs + (timeSpan * i) / tickIntervals;
+      const x = xFor(ts);
+      const d = new Date(ts);
+      const label = d.toLocaleDateString('en-US', { month: 'short', year: '2-digit' });
+
+      if (i === 0) ctx.textAlign = 'left';
+      else if (i === tickIntervals) ctx.textAlign = 'right';
+      else ctx.textAlign = 'center';
+
+      ctx.fillText(label, x, height - 14);
+    }
+
+    // Hover vertical crosshair
+    if (state.trajHoveredPoint) {
+      ctx.save();
+      ctx.strokeStyle = isDark ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.2)';
+      ctx.lineWidth = 1;
+      ctx.setLineDash([3, 3]);
+      ctx.beginPath();
+      ctx.moveTo(state.trajHoveredPoint.x, pad.top);
+      ctx.lineTo(state.trajHoveredPoint.x, height - pad.bottom);
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    const collectedPoints = [];
+    const sortedDrawList = [...plotted].sort((a, b) => {
+      if (a.itemNumber === state.trajHoveredSku) return 1;
+      if (b.itemNumber === state.trajHoveredSku) return -1;
+      return 0;
+    });
+
+    sortedDrawList.forEach((item) => {
+      const color = skuColorMap.get(item.itemNumber) || '#2563eb';
+      const isHovered = item.itemNumber === state.trajHoveredSku;
+      const hasAnyHover = !!state.trajHoveredSku;
+
+      const basePrice = item.history[0]?.activePrice || 1;
+      const linePoints = item.history.map((h) => {
+        let v = 0;
+        if (state.trajMode === 'pct') {
+          v = basePrice > 0 ? ((h.activePrice - basePrice) / basePrice) * 100 : 0;
+        } else {
+          v = h.activePrice;
+        }
+        const x = xFor(h.timestamp);
+        const y = yFor(v);
+        return {
+          x,
+          y,
+          val: v,
+          pctChange: basePrice > 0 ? ((h.activePrice - basePrice) / basePrice) * 100 : 0,
+          price: h.activePrice,
+          basePrice: basePrice,
+          date: h.date,
+          units: h.units,
+          warehouse: h.warehouse,
+          sku: item.itemNumber,
+          name: resolveItemDisplay(item).primaryName,
+          deptName: item.deptName,
+          color
+        };
+      });
+
+      collectedPoints.push(...linePoints);
+
+      ctx.save();
+      if (hasAnyHover && !isHovered) {
+        ctx.globalAlpha = 0.12;
+        ctx.lineWidth = 1.2;
+      } else if (isHovered) {
+        ctx.globalAlpha = 1.0;
+        ctx.lineWidth = 3.6;
+        ctx.shadowColor = color;
+        ctx.shadowBlur = 8;
+      } else {
+        ctx.globalAlpha = plotted.length > 20 ? 0.45 : 0.85;
+        ctx.lineWidth = plotted.length > 20 ? 1.5 : 2.2;
+      }
+
+      ctx.strokeStyle = color;
+      ctx.beginPath();
+      linePoints.forEach((pt, idx) => {
+        if (idx === 0) ctx.moveTo(pt.x, pt.y);
+        else ctx.lineTo(pt.x, pt.y);
+      });
+      ctx.stroke();
+      ctx.restore();
+
+      if (!hasAnyHover || isHovered) {
+        const radius = isHovered ? 4.5 : plotted.length > 20 ? 2 : 3;
+        ctx.save();
+        ctx.fillStyle = color;
+        ctx.globalAlpha = isHovered ? 1.0 : plotted.length > 20 ? 0.6 : 0.9;
+        for (const pt of linePoints) {
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, radius, 0, Math.PI * 2);
+          ctx.fill();
+        }
+        ctx.restore();
+      }
+    });
+
+    // Highlight hovered point with luminous ring
+    if (state.trajHoveredPoint) {
+      ctx.save();
+      ctx.beginPath();
+      ctx.arc(state.trajHoveredPoint.x, state.trajHoveredPoint.y, 6.5, 0, Math.PI * 2);
+      ctx.fillStyle = '#ffffff';
+      ctx.fill();
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = state.trajHoveredPoint.color || '#2563eb';
+      ctx.stroke();
+      ctx.restore();
+    }
+
+    state.trajDataPoints = collectedPoints;
+  }
+
+  function renderTrajectoriesLegend(candidates, skuColorMap) {
+    const listEl = document.getElementById('trajectoriesLegendList');
+    if (!listEl) return;
+
+    listEl.innerHTML = '';
+    if (!candidates || candidates.length === 0) {
+      listEl.innerHTML = '<div style="grid-column:1/-1;text-align:center;padding:1rem;color:var(--text-muted);font-size:0.82rem">No repeat SKUs match the current trajectory criteria.</div>';
+      return;
+    }
+
+    candidates.forEach((item) => {
+      const isActive = state.trajActiveSkus ? state.trajActiveSkus.has(item.itemNumber) : false;
+      const color = skuColorMap.get(item.itemNumber) || 'var(--text-muted)';
+      const isHovered = item.itemNumber === state.trajHoveredSku;
+      const info = resolveItemDisplay(item);
+
+      const chip = document.createElement('div');
+      chip.className = `traj-legend-chip ${isActive ? '' : 'dimmed'} ${isHovered ? 'active-highlight' : ''}`;
+      chip.setAttribute('tabindex', '0');
+      chip.setAttribute('role', 'button');
+      chip.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+      chip.setAttribute('aria-label', `${isActive ? 'Hide' : 'Show'} ${info.primaryName}`);
+
+      const pillClass =
+        Math.abs(item.pctChange) < 0.05 ? 'flat' : item.pctChange > 0 ? 'up' : 'down';
+
+      chip.innerHTML = `
+        <div class="traj-chip-left">
+          <span class="traj-chip-dot" style="background:${isActive ? color : 'var(--text-muted)'}"></span>
+          <span class="traj-chip-name" title="${escapeHtml(info.primaryName)}">${escapeHtml(info.primaryName)}</span>
+          <span class="traj-chip-sku">#${item.itemNumber}</span>
+        </div>
+        <div class="traj-chip-right">
+          <span class="traj-chip-price">${formatCurrency(item.latestPrice)}</span>
+          <span class="traj-chip-badge ${pillClass}">${formatPct(item.pctChange, 1)}</span>
+        </div>
+      `;
+
+      chip.addEventListener('mouseenter', () => {
+        if (isActive) {
+          state.trajHoveredSku = item.itemNumber;
+          renderSkuTrajectoriesChart();
+        }
+      });
+
+      chip.addEventListener('mouseleave', () => {
+        if (state.trajHoveredSku === item.itemNumber) {
+          state.trajHoveredSku = null;
+          state.trajHoveredPoint = null;
+          renderSkuTrajectoriesChart();
+        }
+      });
+
+      chip.addEventListener('click', (e) => {
+        e.stopPropagation();
+        if (!state.trajActiveSkus) state.trajActiveSkus = new Set();
+        if (state.trajActiveSkus.has(item.itemNumber)) {
+          state.trajActiveSkus.delete(item.itemNumber);
+        } else {
+          state.trajActiveSkus.add(item.itemNumber);
+        }
+        renderSkuTrajectoriesChart();
+      });
+
+      chip.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          chip.click();
+        }
+      });
+
+      listEl.appendChild(chip);
+    });
+  }
+
+  function setupTrajectoriesInteractions() {
+    document.getElementById('trajPresetSelect')?.addEventListener('change', (e) => {
+      state.trajPreset = e.target.value;
+      updateTrajectoriesActiveSkusFromPreset(e.target.value);
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('trajDeptSelect')?.addEventListener('change', (e) => {
+      state.trajDept = e.target.value;
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('trajSearchInput')?.addEventListener('input', (e) => {
+      state.trajQuery = e.target.value;
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('btnTrajModePct')?.addEventListener('click', () => {
+      state.trajMode = 'pct';
+      document.getElementById('btnTrajModePct')?.classList.add('active');
+      document.getElementById('btnTrajModePrice')?.classList.remove('active');
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('btnTrajModePrice')?.addEventListener('click', () => {
+      state.trajMode = 'price';
+      document.getElementById('btnTrajModePrice')?.classList.add('active');
+      document.getElementById('btnTrajModePct')?.classList.remove('active');
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('btnTrajShowAll')?.addEventListener('click', () => {
+      state.trajPreset = 'all_repeat';
+      const presetSelect = document.getElementById('trajPresetSelect');
+      if (presetSelect) presetSelect.value = 'all_repeat';
+      updateTrajectoriesActiveSkusFromPreset('all_repeat');
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('btnTrajClearAll')?.addEventListener('click', () => {
+      state.trajActiveSkus = new Set();
+      renderSkuTrajectoriesChart();
+    });
+
+    document.getElementById('btnTrajResetTop10')?.addEventListener('click', () => {
+      state.trajPreset = 'top_spend';
+      const presetSelect = document.getElementById('trajPresetSelect');
+      if (presetSelect) presetSelect.value = 'top_spend';
+      updateTrajectoriesActiveSkusFromPreset('top_spend');
+      renderSkuTrajectoriesChart();
+    });
+
+    const canvas = document.getElementById('trajectoriesCanvas');
+    const tooltip = document.getElementById('trajectoriesTooltip');
+
+    if (canvas && tooltip) {
+      canvas.addEventListener('mousemove', (e) => {
+        if (!state.trajDataPoints || state.trajDataPoints.length === 0) return;
+        const rect = canvas.getBoundingClientRect();
+        const mouseX = e.clientX - rect.left;
+        const mouseY = e.clientY - rect.top;
+
+        let closest = null;
+        let minDist = 35;
+
+        for (const pt of state.trajDataPoints) {
+          const dist = Math.hypot(mouseX - pt.x, mouseY - pt.y);
+          if (dist < minDist) {
+            minDist = dist;
+            closest = pt;
+          }
+        }
+
+        if (closest) {
+          const skuChanged = state.trajHoveredSku !== closest.sku;
+          const ptChanged = !state.trajHoveredPoint || state.trajHoveredPoint.x !== closest.x || state.trajHoveredPoint.y !== closest.y;
+          if (skuChanged || ptChanged) {
+            state.trajHoveredSku = closest.sku;
+            state.trajHoveredPoint = closest;
+            renderSkuTrajectoriesChart();
+          }
+
+          tooltip.hidden = false;
+          const tipLeft = Math.min(Math.max(closest.x - 110, 10), rect.width - 240);
+          const tipTop = Math.max(closest.y - 85, 10);
+          tooltip.style.left = `${tipLeft}px`;
+          tooltip.style.top = `${tipTop}px`;
+
+          const pctVal = closest.pctChange !== undefined ? closest.pctChange : closest.val;
+          const pillClass =
+            Math.abs(pctVal) < 0.05 ? 'flat' : pctVal > 0 ? 'up' : 'down';
+
+          const deltaDollar = closest.price - (closest.basePrice || closest.price);
+          const dollarDetail = state.trajMode === 'price' && Math.abs(deltaDollar) >= 0.01
+            ? `<span style="font-size:0.75rem;color:var(--text-muted);margin-left:4px">(${formatSignedCurrency(deltaDollar)})</span>`
+            : '';
+
+          tooltip.innerHTML = `
+            <div style="font-weight:700;color:var(--text-primary);margin-bottom:2px">${escapeHtml(closest.name)}</div>
+            <div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">SKU #${closest.sku} &bull; ${formatDateShort(closest.date)} (${escapeHtml(closest.warehouse || 'Wholesale')})</div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-top:4px">
+              <span>Unit Price: <strong>${formatCurrency(closest.price)}</strong>${dollarDetail}</span>
+              <span class="traj-chip-badge ${pillClass}">${formatPct(pctVal, 1)}</span>
+            </div>
+          `;
+        } else {
+          if (state.trajHoveredSku !== null || state.trajHoveredPoint !== null) {
+            state.trajHoveredSku = null;
+            state.trajHoveredPoint = null;
+            renderSkuTrajectoriesChart();
+          }
+          tooltip.hidden = true;
+        }
+      });
+
+      canvas.addEventListener('mouseleave', () => {
+        if (state.trajHoveredSku !== null || state.trajHoveredPoint !== null) {
+          state.trajHoveredSku = null;
+          state.trajHoveredPoint = null;
+          renderSkuTrajectoriesChart();
+        }
+        tooltip.hidden = true;
+      });
+    }
+  }
+
   function exportSkuCsv() {
     if (!state.analytics || !state.analytics.skuList) return;
     const rows = [
@@ -1423,6 +2051,9 @@
           pane.hidden = !isTarget;
         });
 
+        if (viewId === 'view-trajectories' && state.analytics) {
+          setTimeout(() => renderSkuTrajectoriesChart(), 50);
+        }
         if (viewId === 'view-macro' && state.analytics) {
           setTimeout(() => renderMacroCpiChart(state.analytics.cpiSeries), 50);
         }
@@ -2149,6 +2780,9 @@
         if (state.currentView === 'view-macro') {
           renderMacroCpiChart(state.analytics.cpiSeries);
         }
+        if (state.currentView === 'view-trajectories') {
+          renderSkuTrajectoriesChart();
+        }
         const activeItem = state.analytics.skuList.find((s) => s.itemNumber === state.selectedSku);
         if (activeItem) renderItemDetailChart(activeItem);
       }
@@ -2184,6 +2818,7 @@
     setupSyncAndImportControls();
     setupMainChartHover();
     setupInfoTooltips();
+    setupTrajectoriesInteractions();
 
     const verEl = document.getElementById('footerAppVersion');
     if (verEl) verEl.textContent = `v${APP_VERSION}`;
